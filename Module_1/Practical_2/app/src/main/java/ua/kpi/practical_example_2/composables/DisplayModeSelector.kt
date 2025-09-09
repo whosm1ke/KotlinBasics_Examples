@@ -45,7 +45,11 @@ fun DisplayModeSelector(
                 // Робимо кнопку "активною", якщо це поточний режим
                 enabled = mode != selected
             ) {
-                Text(text = mode.name)
+                Text(text = when (mode) {
+                    DisplayFor.BASIC_LEVEL -> "Базовий рівень"
+                    DisplayFor.MIDDLE_LEVEL -> "Середній рівень"
+                    DisplayFor.ADVANCED_LEVEL -> "Просунутий рівень"
+                })
             }
         }
     }
