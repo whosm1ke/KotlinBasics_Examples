@@ -1,0 +1,53 @@
+# -----------------------------
+# IDEA / Android Studio
+# -----------------------------
+*.iml
+*.ipr
+*.iws
+.idea/
+.idea_modules/
+captures/
+.externalNativeBuild/
+.cxx/
+.gradle/
+local.properties
+*.log
+
+# -----------------------------
+# Gradle
+# -----------------------------
+build/
+.gradle/
+gradle-wrapper.jar
+.gradle/*
+
+# -----------------------------
+# Android
+# -----------------------------
+*.apk
+*.ap_
+*.dex
+*.class
+*.jar
+*.keystore
+*.so
+*.obb
+
+# -----------------------------
+# Кеші та тимчасові файли
+# -----------------------------
+*.orig
+*.swp
+*.DS_Store
+*.tmp
+*.temp
+
+# -----------------------------
+# Модулі та практичні
+# -----------------------------
+Module_*/Practical_*/.idea/
+Module_*/Practical_*/build/
+Module_*/Practical_*/app/build/
+Module_*/Practical_*/.gradle/
+Module_*/Practical_*/local.properties
+Module_*/Practical_*/.kotlin
