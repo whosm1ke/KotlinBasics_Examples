@@ -25,7 +25,6 @@ import ua.kpi.practical_example_1.composables.DisplayModeSelector
 import ua.kpi.practical_example_1.composables.SolarForecastAppLevel1
 import ua.kpi.practical_example_1.composables.SolarForecastAppLevel2
 import ua.kpi.practical_example_1.composables.SolarForecastAppLevel3
-import ua.kpi.practical_example_1.composables.SolarStationApp
 import ua.kpi.practical_example_1.ui.theme.Practical_Example_1Theme
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +33,7 @@ class MainActivity : ComponentActivity() {
 //        enableEdgeToEdge()
         setContent {
             Practical_Example_1Theme {
-                var displayFor by remember { mutableStateOf(DisplayFor.HOME_WORK) }
+                var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
@@ -48,7 +47,6 @@ class MainActivity : ComponentActivity() {
 
                         // Відображення відповідного екрану
                         when (displayFor) {
-                            DisplayFor.HOME_WORK -> SolarStationApp()
                             DisplayFor.BASIC_LEVEL -> SolarForecastAppLevel1()
                             DisplayFor.MIDDLE_LEVEL -> SolarForecastAppLevel2()
                             DisplayFor.ADVANCED_LEVEL -> SolarForecastAppLevel3()
