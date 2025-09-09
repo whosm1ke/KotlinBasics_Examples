@@ -29,7 +29,6 @@ import ua.kpi.practical_example_2.ui.theme.Practical_Example_2Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             Practical_Example_2Theme {
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
