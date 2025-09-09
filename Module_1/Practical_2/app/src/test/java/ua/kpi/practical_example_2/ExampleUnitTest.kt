@@ -1,4 +1,4 @@
-package ua.kpi.practical_example_2
+﻿package ua.kpi.practical_example_2
 
 import org.junit.Test
 
