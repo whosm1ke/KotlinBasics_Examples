@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "9w5YM2hUJPI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\cherm\\IdeaProjects\\KotlinBasics_Examples\\API\\KotlinBasics_API\\KotlinBasics_API\\KotlinBasics_API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\cherm\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.7\\microsoft.aspnetcore.openapi.9.0.7.nupkg.sha512",
+    "C:\\Users\\cherm\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}

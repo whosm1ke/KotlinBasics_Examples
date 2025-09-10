@@ -1,0 +1,7 @@
+﻿services:
+  kotlinbasics_api:
+    image: kotlinbasics_api
+    build:
+      context: .
+      dockerfile: KotlinBasics_API/Dockerfile
+
