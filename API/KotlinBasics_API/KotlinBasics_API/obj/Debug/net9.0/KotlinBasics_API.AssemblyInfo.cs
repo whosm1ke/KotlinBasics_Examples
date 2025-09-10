@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KotlinBasics_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+05ec708dc0ad383bce6e52e4444f4baca09f13f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("KotlinBasics_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KotlinBasics_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
