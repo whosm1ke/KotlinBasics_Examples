@@ -1,4 +1,4 @@
-using KotlinBasics_API.Module_1_Example_9;
+using KotlinBasics_API;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(options =>
@@ -20,6 +20,7 @@ if (app.Environment.IsDevelopment())
 
 SolarForecastAPI_3_9.Initialize(app);
 SolarForecastAPI_4_10.Initialize(app);
+SolarForecastAPI_4_11.Initialize(app);
 
 
 app.Run();
