@@ -9,10 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,74 +25,100 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import ua.kpi.practical_example_9.viewModels.AdvancedSolarViewModel
-import ua.kpi.practical_example_9.viewModels.AdvancedSolarViewModelFactory
+import ua.kpi.practical_example_9.advanced.SolarForecast
+import ua.kpi.practical_example_9.advanced.SolarViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdvancedApp(viewModel: AdvancedSolarViewModel = viewModel(factory = AdvancedSolarViewModelFactory())) {
-    var dayInput by remember { mutableStateOf("") }
-    var powerInput by remember { mutableStateOf("") }
-    var searchQuery by remember { mutableStateOf("") }
-    var ascending by remember { mutableStateOf(true) }
+fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
+    val forecasts by viewModel.forecasts.collectAsState()
 
-    val powerList by viewModel.powerList.collectAsState()
-    val averagePower by viewModel.averagePower.collectAsState()
+    var filterDay by remember { mutableStateOf("") }
+    var sortDescending by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    var newDay by remember { mutableStateOf("") }
+    var newPower by remember { mutableStateOf("") }
 
-        Text("Просунутий рівень: Прогноз сонячної станції", style = MaterialTheme.typography.titleLarge)
-        Spacer(modifier = Modifier.height(16.dp))
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text("Просунутий рівень: агрегація, кешування, бізнес-логіка")
 
-        OutlinedTextField(dayInput, { dayInput = it }, label = { Text("День") }, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            powerInput, { powerInput = it },
-            label = { Text("Потужність (кВт)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {
-            val powerValue = powerInput.toDoubleOrNull() ?: 0.0
-            viewModel.addPower(dayInput, powerValue)
-            dayInput = ""
-            powerInput = ""
-        }, modifier = Modifier.fillMaxWidth()) { Text("Додати прогноз") }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
+        // Фільтр і сортування
         Row {
-            OutlinedTextField(searchQuery, { searchQuery = it; viewModel.filterAndSort(it, ascending) },
-                label = { Text("Фільтр за днем") },
+            OutlinedTextField(
+                value = filterDay,
+                onValueChange = {
+                    filterDay = it
+                    viewModel.filterByDay(it)
+                },
+                label = { Text("Фільтр по дню") },
                 modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(onClick = { ascending = !ascending; viewModel.filterAndSort(searchQuery, ascending) }) {
-                Text(if (ascending) "↑" else "↓")
+            Spacer(Modifier.width(8.dp))
+            Button(onClick = {
+                sortDescending = !sortDescending
+                viewModel.sortByPower(sortDescending)
+            }) {
+                Text(if (sortDescending) "Сортувати ↑" else "Сортувати ↓")
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Середня потужність: ${String.format("%.2f", averagePower)} кВт", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
 
-        for (item in powerList) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("${item.day}: ${item.power} кВт")
-                Row {
-                    Button(onClick = { viewModel.deletePower(item.day) }) { Text("Видалити") }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = { viewModel.updatePower(item.day, item.power + 10) }) { Text("+10 кВт") }
+        // Форма для додавання нового прогнозу
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            OutlinedTextField(
+                value = newDay,
+                onValueChange = { newDay = it },
+                label = { Text("День") },
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(Modifier.width(8.dp))
+            OutlinedTextField(
+                value = newPower,
+                onValueChange = { newPower = it },
+                label = { Text("Потужність") },
+                modifier = Modifier.width(120.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+            Spacer(Modifier.width(8.dp))
+            Button(onClick = {
+                val power = newPower.toDoubleOrNull()
+                if (newDay.isNotBlank() && power != null) {
+                    viewModel.addForecast(SolarForecast(forecasts.size + 1, newDay, power))
+                    newDay = ""
+                    newPower = ""
+                }
+            }) {
+                Text("Додати")
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        // Кнопка завантаження всіх прогнозів
+        Button(onClick = { viewModel.loadForecasts(forceRefresh = true) }) {
+            Text("Завантажити прогнози")
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        // Список прогнозів
+        LazyColumn {
+            items(forecasts) { forecast ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("${forecast.day}: ${forecast.predictedPower} кВт")
+                    IconButton(onClick = { viewModel.deleteForecast(forecast.id) }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Видалити")
+                    }
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
         }
     }
 }
