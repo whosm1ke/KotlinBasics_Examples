@@ -51,3 +51,7 @@ Module_*/Practical_*/app/build/
 Module_*/Practical_*/.gradle/
 Module_*/Practical_*/local.properties
 Module_*/Practical_*/.kotlin
+API/KotlinBasics_API/bin
+API/KotlinBasics_API/KotlinBasics_API/bin
+API/KotlinBasics_API/KotlinBasics_API/obj
+API/KotlinBasics_API/obj
