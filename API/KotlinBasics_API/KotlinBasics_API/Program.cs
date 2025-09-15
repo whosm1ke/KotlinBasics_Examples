@@ -21,6 +21,7 @@ if (app.Environment.IsDevelopment())
 SolarForecastAPI_3_9.Initialize(app);
 SolarForecastAPI_4_10.Initialize(app);
 SolarForecastAPI_4_11.Initialize(app);
+SolarForecastAPI_4_12.Initialize(app);
 
 
 app.Run();

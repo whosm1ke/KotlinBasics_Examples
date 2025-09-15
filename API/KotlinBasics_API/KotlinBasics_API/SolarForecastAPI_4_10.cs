@@ -108,7 +108,7 @@ public static class SolarForecastAPI_4_10
 // === DTO ===
 record Station(int Id, string Name, string Location, double CapacityKw);
 
-record Forecast(
+partial record Forecast(
     int Id,
     int StationId,
     DateTime Date,
