@@ -22,3 +22,4 @@ class ExampleInstrumentedTest {
         assertEquals("ua.kpi.practical_example_25", appContext.packageName)
     }
 }
+
