@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_3.composables
+package ua.kpi.practical_example_3.composables
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -13,7 +13,7 @@ import ua.kpi.practical_example_3.R
 
 @Composable
 fun MediumEnergyApp() {
-    // Стан потужності та обраного режиму
+    // Створюємо стан для зберігання значення потужності та обраного режиму
     var power by remember { mutableStateOf(0) }
     var mode by remember { mutableStateOf("Денні") }
 
@@ -22,6 +22,7 @@ fun MediumEnergyApp() {
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        // Відображаємо заголовок додатку
         Text(
             text = "Сонячна електростанція - Прогноз потужності",
             fontSize = 22.sp,
@@ -30,7 +31,7 @@ fun MediumEnergyApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Row для кнопок вибору режиму
+        // Створюємо рядок з кнопками для вибору режиму роботи
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -47,7 +48,7 @@ fun MediumEnergyApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Відображення зображення
+        // Відображаємо зображення сонячної панелі
         Image(
             painter = painterResource(id = R.drawable.solar_panel),
             contentDescription = "Сонячна панель",
@@ -58,7 +59,7 @@ fun MediumEnergyApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Відображення стану
+        // Відображаємо обраний режим та прогнозовану потужність
         Text(
             text = "Режим: $mode",
             fontSize = 18.sp

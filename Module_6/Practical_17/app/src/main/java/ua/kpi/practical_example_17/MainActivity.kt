@@ -31,15 +31,23 @@ import ua.kpi.practical_example_17.ui.theme.Practical_Example_17Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Отримуємо менеджер сенсорів системи
         val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        // Отримуємо стандартний акселерометр
         val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        // Отримуємо сенсор освітлення
         val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+        
+        // Встановлюємо вміст активності за допомогою Compose
         setContent {
             Practical_Example_17Theme {
+                // Створюємо стан для вибору рівня складності
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
+                
+                // Встановлюємо поверхню з максимальним розміром
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Перемикач між рівнями
+                        // Відображаємо перемикач між рівнями складності
                         DisplayModeSelector(
                             selected = displayFor,
                             onSelectedChange = { displayFor = it }
@@ -47,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Відображення відповідного рівня складності
+                        // Відображаємо відповідний компонент залежно від обраного рівня
                         when (displayFor) {
                             DisplayFor.BASIC_LEVEL -> BasicApp(sensorManager, accelerometer)
                             DisplayFor.MIDDLE_LEVEL -> MediumApp(sensorManager, accelerometer, lightSensor)
@@ -59,4 +67,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

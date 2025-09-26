@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_8.composables
+package ua.kpi.practical_example_8.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,18 +16,19 @@ import ua.kpi.practical_example_8.DisplayFor
 
 @Composable
 fun DisplayModeSelector(
-    // Текуче значення
+    // Текуче значення, яке відображається на екрані
     selected: DisplayFor,
-    // Callback при зміні
+    // Callback-функція, що викликається при зміні режиму відображення
     onSelectedChange: (DisplayFor) -> Unit
 ) {
-    // Column з кнопками для перемикання
+    // Відображаємо елементи у вертикальному стовпчику з вирівнюванням по центру
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Відображаємо заголовок для вибору режиму відображення
         Text(
             text = "Вибір режиму відображення",
             style = MaterialTheme.typography.bodyLarge
@@ -35,16 +36,17 @@ fun DisplayModeSelector(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Для кожного значення enum створюємо кнопку
+        // Проходить по всім значенням enum DisplayFor і створює кнопки для кожного
         DisplayFor.values().forEach { mode ->
             Button(
-                onClick = { onSelectedChange(mode) },
+                onClick = { onSelectedChange(mode) }, // Викликає callback при натисканні
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                // Робимо кнопку "активною", якщо це поточний режим
+                // Кнопка активна, якщо поточний режим не співпадає з обраним
                 enabled = mode != selected
             ) {
+                // Відображаємо текст з назвою режиму відображення
                 Text(text = when (mode) {
                     DisplayFor.BASIC_LEVEL -> "Базовий рівень"
                     DisplayFor.MIDDLE_LEVEL -> "Середній рівень"

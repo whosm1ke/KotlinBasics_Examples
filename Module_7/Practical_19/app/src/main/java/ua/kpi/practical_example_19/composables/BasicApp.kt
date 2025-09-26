@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_19.composables
+package ua.kpi.practical_example_19.composables
 
 import android.graphics.Color
 import androidx.compose.foundation.layout.*
@@ -17,13 +17,15 @@ import kotlin.random.Random
 
 @Composable
 fun BasicApp() {
+    // Основний колон для розміщення елементів
     Column(modifier = Modifier.fillMaxSize()) {
+        // Відображення заголовка графіка
         Text(
             text = "Прогноз енергоспоживання (лінійний графік)",
             style = MaterialTheme.typography.titleMedium
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Відступ між заголовком і графіком
 
         // AndroidView дозволяє вставляти класичні View у Compose
         AndroidView(
@@ -32,7 +34,7 @@ fun BasicApp() {
                     // Генерація даних для графіка
                     val entries = mutableListOf<Entry>()
                     val hours = 24 // 24 години доби
-                    val random = Random(42)
+                    val random = Random(42) // Використовуємо фіксований seed для стабільності результатів
 
                     for (i in 0 until hours) {
                         // Генеруємо дані споживання (наприклад, 0-100 кВт)
@@ -40,29 +42,29 @@ fun BasicApp() {
                         entries.add(Entry(i.toFloat(), consumption))
                     }
 
-                    // Створення DataSet для LineChart
+                    // Створення DataSet для LineChart з даними
                     val dataSet = LineDataSet(entries, "Споживання (кВт)").apply {
-                        color = Color.BLUE
-                        valueTextColor = Color.BLACK
-                        lineWidth = 2f
-                        setDrawCircles(true)
-                        setDrawValues(false)
+                        color = Color.BLUE // Колір лінії графіка
+                        valueTextColor = Color.BLACK // Колір тексту значень
+                        lineWidth = 2f // Товщина лінії
+                        setDrawCircles(true) // Відображення точок на графіку
+                        setDrawValues(false) // Не відображати значення над точками
                     }
 
                     // Прив'язка даних до графіка
                     data = LineData(dataSet)
 
                     // Налаштування графіка
-                    description = Description().apply { text = "Години" }
-                    setTouchEnabled(true) // дозволяє прокручувати та масштабувати графік
-                    setPinchZoom(true)
-                    setScaleEnabled(true)
-                    animateX(1000)
+                    description = Description().apply { text = "Години" } // Опис графіка
+                    setTouchEnabled(true) // Дозволяє прокручувати та масштабувати графік
+                    setPinchZoom(true) // Масштабування пальцями
+                    setScaleEnabled(true) // Увімкнення масштабування
+                    animateX(1000) // Анімація з'явлення графіка по осі X (1 секунда)
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
+                .height(300.dp) // Встановлює висоту графіка
         )
     }
 }

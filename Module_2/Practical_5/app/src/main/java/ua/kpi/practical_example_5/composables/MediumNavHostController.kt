@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_5.composables
+package ua.kpi.practical_example_5.composables
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -17,27 +17,30 @@ fun MediumNavHostController(
     navController: NavHostController,
 ) {
 
+    // Ініціалізація навігаційного хоста з початковою дестинацією
     NavHost(navController = navController, startDestination = Screen.MediumScreen.MainScreen.route) {
-        // Головне меню
+        // Головне меню - відображення екрану головного меню
         composable(Screen.MediumScreen.MainScreen.route) { MainMenuScreen(navController) }
 
-        // Екран інформації про користувача
+        // Екран інформації про користувача - відображення екрану з даними користувача
         composable(Screen.MediumScreen.UserInfo.route) { UserInfoScreen(navController) }
 
-        // Екран прогнозу СЕС з передачею аргументів
+        // Екран прогнозу СЕС з передачею аргументів (ім'я користувача)
         composable(
             "${Screen.MediumScreen.SolarForecast.route}/{userName}",
             arguments = listOf(navArgument("userName") { type = NavType.StringType })
         ) { backStackEntry ->
+            // Отримання значення аргументу userName з навігаційного стеку
             val userName = backStackEntry.arguments?.getString("userName") ?: "Користувач"
             SolarForecastScreen(navController, userName)
         }
 
-        // Деталі прогнозу (третій екран)
+        // Деталі прогнозу (третій екран) - отримання кількості панелей як аргумент
         composable(
             "${Screen.MediumScreen.SolarDetails.route}/{panelsCount}",
             arguments = listOf(navArgument("panelsCount") { type = NavType.IntType })
         ) { backStackEntry ->
+            // Отримання значення аргументу panelsCount з навігаційного стеку
             val panelsCount = backStackEntry.arguments?.getInt("panelsCount") ?: 0
             SolarDetailsScreen(navController, panelsCount)
         }

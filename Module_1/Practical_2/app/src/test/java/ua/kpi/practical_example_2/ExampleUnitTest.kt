@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_2
+package ua.kpi.practical_example_2
 
 import org.junit.Test
 
@@ -12,6 +12,7 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
+        // Перевіряємо, чи результат додавання 2 + 2 дорівнює 4
         assertEquals(4, 2 + 2)
     }
 }

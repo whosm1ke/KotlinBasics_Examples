@@ -24,25 +24,31 @@ import ua.kpi.practical_example_15.ui.theme.Practical_Example_15Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Вмикаємо edge-to-edge режим для Activity
+        enableEdgeToEdge()
+        
+        // Встановлюємо контент за допомогою Compose
         setContent {
             Practical_Example_15Theme {
+                // Створюємо стан для вибору рівня складності з пам'яттю
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Перемикач між рівнями
+                        // Відображаємо перемикач для вибору рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлюємо стан при зміні вибору
                         )
 
+                        // Додаємо простір між елементами
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Відображення відповідного рівня складності
+                        // Відображаємо відповідний компонент залежно від обраного рівня
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp()
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp()
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()
+                            DisplayFor.BASIC_LEVEL -> BasicApp()       // Базовий рівень
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp()     // Середній рівень
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()  // Просунутий рівень
                         }
                     }
                 }

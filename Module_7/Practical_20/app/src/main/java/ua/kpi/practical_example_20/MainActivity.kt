@@ -25,6 +25,7 @@ import ua.kpi.practical_example_20.composables.MediumApp
 import ua.kpi.practical_example_20.ui.theme.Practical_Example_20Theme
 
 class MainActivity : ComponentActivity() {
+    // Оголошення менеджера сенсорів та змінних для акселерометра та гіроскопа
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var gyroscope: Sensor? = null
@@ -32,17 +33,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Ініціалізація сенсорів
+        // Ініціалізація менеджера сенсорів та отримання стандартних сенсорів
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
+
+        // Фіксація орієнтації екрана у портретному режимі
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         setContent {
+            // Створення стану для вибору рівня складності додатку
             var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
             Surface(modifier = Modifier.fillMaxSize()) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    // Перемикач рівня складності
+                    // Відображення перемикача рівня складності
                     DisplayModeSelector(
                         selected = displayFor,
                         onSelectedChange = { displayFor = it }
@@ -50,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Відображення UI відповідно до рівня
+                    // Відображення відповідного UI залежно від обраного рівня складності
                     when (displayFor) {
                         DisplayFor.BASIC_LEVEL -> BasicApp(sensorManager, accelerometer)
                         DisplayFor.MIDDLE_LEVEL -> MediumApp(sensorManager, accelerometer)

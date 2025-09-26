@@ -13,12 +13,16 @@ import org.junit.Assert.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-@RunWith(AndroidJUnit4::class)
+@RunWith(AndroidJUnit4::class) // Вказує, що цей тест буде виконуватися на Android пристрої з використанням AndroidJUnit4
 class ExampleInstrumentedTest {
-    @Test
+    @Test // Анотація, яка позначає метод як тестовий
     fun useAppContext() {
-        // Context of the app under test.
+        // Отримуємо контекст тестування за допомогою InstrumentationRegistry
+        // Це дозволяє отримати доступ до контексту додатку, який тестується
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        
+        // Перевіряємо, чи відповідає назва пакета додатка очікуваному значенню
+        // Якщо назва пакета не збігається, тест буде вважатися проваленим
         assertEquals("ua.kpi.practical_example_7", appContext.packageName)
     }
 }

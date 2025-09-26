@@ -12,6 +12,8 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
+        // Виконуємо перевірку правильності додавання чисел 2 та 2
+        // Метод assertEquals порівнює очікуване значення (4) з фактичним (2 + 2)
         assertEquals(4, 2 + 2)
     }
 }

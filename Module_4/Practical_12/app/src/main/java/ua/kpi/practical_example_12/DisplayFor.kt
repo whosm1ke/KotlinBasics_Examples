@@ -1,7 +1,16 @@
-﻿package ua.kpi.practical_example_12
+package ua.kpi.practical_example_12
 
+/**
+ * Перерахування (enum) для визначення рівнів відображення користувача.
+ * Використовується для позначення різних ступенів складності або доступу до інформації.
+ *
+ * Елементи перерахування:
+ * - BASIC_LEVEL: базовий рівень відображення
+ * - MIDDLE_LEVEL: середній рівень відображення
+ * - ADVANCED_LEVEL: просунутий рівень відображення
+ */
 enum class DisplayFor {
-    BASIC_LEVEL,
-    MIDDLE_LEVEL,
-    ADVANCED_LEVEL,
+    BASIC_LEVEL,     // Базовий рівень відображення
+    MIDDLE_LEVEL,    // Середній рівень відображення
+    ADVANCED_LEVEL,  // Просунутий рівень відображення
 }

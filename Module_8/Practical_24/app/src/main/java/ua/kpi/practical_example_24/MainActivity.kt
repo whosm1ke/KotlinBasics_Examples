@@ -30,25 +30,28 @@ import ua.kpi.practical_example_24.ui.theme.Practical_Example_24Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Встановлює вміст активності за допомогою Compose
         setContent {
             Practical_Example_24Theme {
+                // Створення стану для вибору рівня складності з початковим значенням BASIC_LEVEL
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
+                // Основна поверхня, яка заповнює весь екран
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        // Перемикач рівня складності
+                        // Відображення компонента для вибору рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлення стану при зміні вибору
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp)) // Відступ між елементами
 
-                        // Відображення UI відповідно до рівня
+                        // Умовне відображення різних компонентів в залежності від обраного рівня
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp()
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp()
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()
+                            DisplayFor.BASIC_LEVEL -> BasicApp()         // Відображення базового рівня
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp()       // Відображення середнього рівня
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()   // Відображення просунутого рівня
                         }
                     }
                 }

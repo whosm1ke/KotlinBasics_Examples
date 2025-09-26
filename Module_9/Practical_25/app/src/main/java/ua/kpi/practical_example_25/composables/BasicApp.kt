@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_25.composables
+package ua.kpi.practical_example_25.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +18,14 @@ import ua.kpi.practical_example_25.data.BasicCalculator
 
 @Composable
 fun BasicApp() {
-    // Змінні стану для введених користувачем даних
+    // Змінні стану для зберігання введених користувачем даних
     var solarIrradiance by remember { mutableStateOf("") } // Сонячна радіація (Вт/м²)
     var temperature by remember { mutableStateOf("") }     // Температура (°C)
     var panelArea by remember { mutableStateOf("") }       // Площа панелей (м²)
     // Змінна для збереження результату розрахунку
     var result by remember { mutableStateOf<Double?>(null) }
 
+    // Створення екземпляра калькулятора
     val calc = BasicCalculator()
     Column(
         modifier = Modifier
@@ -84,7 +85,7 @@ fun BasicApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Виведення результату
+        // Виведення результату розрахунку
         if (result != null) {
             Text(
                 text = "Прогнозована потужність: %.2f кВт".format(result),
@@ -98,4 +99,3 @@ fun BasicApp() {
         }
     }
 }
-

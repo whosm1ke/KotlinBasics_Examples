@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_10.composables
+package ua.kpi.practical_example_10.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,28 +29,35 @@ import ua.kpi.practical_example_10.advanced.SolarViewModel
 @Composable
 fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
 
+    // Отримуємо стани з ViewModel для станцій, прогнозів, статистики, помилок та завантаження
     val stations by viewModel.stations.collectAsState()
     val forecasts by viewModel.forecasts.collectAsState()
     val stats by viewModel.stats.collectAsState()
     val error by viewModel.error.collectAsState()
     val loading by viewModel.loading.collectAsState()
 
+    // При запуску компоненти завантажуємо список станцій
     LaunchedEffect(Unit) {
         viewModel.loadStations()
     }
 
+    // Основна колонка для відображення даних
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
 
+        // Якщо дані завантажуються, показуємо індикатор завантаження
         if (loading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         }
 
+        // Якщо є помилка, відображаємо її
         error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
 
+        // Використовуємо LazyColumn для ефективного відображення списку станцій
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(stations) { station ->
+                // Кожна станція відображається у Card (карточці)
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -58,13 +65,14 @@ fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
+                        // Відображаємо назву станції з emoji
                         Text("🌞 ${station.name}", style = MaterialTheme.typography.titleMedium)
                         Text("📍 ${station.location}")
                         Text("⚡ Потужність: ${station.capacityKw} кВт")
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Статистика станції
+                        // Відображаємо статистику станції, якщо вона доступна
                         stats[station.id]?.let { s ->
                             Text("📊 Середня потужність: ${s.averagePowerKw} кВт")
                             Text("🌡 Середня температура: ${s.averageTemperatureC}°C")
@@ -74,6 +82,7 @@ fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
 
                         Spacer(modifier = Modifier.height(8.dp))
 
+                        // Кнопки для завантаження та генерування прогнозів
                         Column {
                             Button(onClick = { viewModel.loadForecasts(station.id) }) {
                                 Text("📈 Завантажити прогнози")
@@ -86,7 +95,7 @@ fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Прогнози
+                        // Відображаємо прогнози для поточної станції
                         val stationForecasts = forecasts[station.id] ?: emptyList()
                         Column {
                             stationForecasts.forEach { f ->

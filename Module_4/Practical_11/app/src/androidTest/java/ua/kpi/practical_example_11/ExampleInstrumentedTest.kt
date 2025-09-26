@@ -11,12 +11,13 @@ import org.junit.runner.RunWith
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-@RunWith(AndroidJUnit4::class)
+@RunWith(AndroidJUnit4::class) // Указуємо, що цей тест буде виконуватися на Android пристрої
 class ExampleInstrumentedTest {
-    @Test
+    @Test // Позначаємо метод як тестовий
     fun useAppContext() {
-        // Context of the app under test.
+        // Отримуємо контекст додатку, який тести виконують
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        // Перевіряємо, чи відповідає назва пакета очікуваному значенню
         assertEquals("ua.kpi.practical_example_11", appContext.packageName)
     }
 }

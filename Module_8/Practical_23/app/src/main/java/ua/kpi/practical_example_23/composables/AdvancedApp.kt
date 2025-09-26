@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_23.composables
+package ua.kpi.practical_example_23.composables
 
 import android.content.Context
 import android.content.Intent
@@ -35,59 +35,67 @@ import java.util.*
 
 @Composable
 fun AdvancedApp() {
+    // Отримуємо контекст за допомогою LocalContext
     val context = LocalContext.current
 
-    // Модель файлу
+    // Модель файлу: визначає структуру даних для кожного елемента
     data class FileItem(
         val type: String, // "Фото" або "Документ"
         val uri: Uri,
-        val addedDate: Long = System.currentTimeMillis(),
-        val name: String
+        val addedDate: Long = System.currentTimeMillis(), // Дата додавання файлу
+        val name: String // Назва файлу
     )
 
-    // Стан списку файлів
+    // Стан списку файлів: зберігає список елементів у пам'яті Compose
     var files by remember { mutableStateOf(listOf<FileItem>()) }
 
-    // Лаунчери для вибору фото та документів
+    // Лаунчер для вибору фото з галереї
     val imageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
+            // Додаємо новий файл типу "Фото" до списку
             files = files + FileItem("Фото", it, System.currentTimeMillis(), getFileName(context, it))
         }
     }
 
+    // Лаунчер для вибору документів (наприклад, PDF, DOCX)
     val documentLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
+            // Додаємо новий файл типу "Документ" до списку
             files = files + FileItem("Документ", it, System.currentTimeMillis(), getFileName(context, it))
         }
     }
 
 
 
-    // Для редагування назви
-    var fileToRename by remember { mutableStateOf<FileItem?>(null) }
-    var newFileName by remember { mutableStateOf("") }
+    // Змінні для редагування назви файлу
+    var fileToRename by remember { mutableStateOf<FileItem?>(null) } // Файл, який потрібно перейменувати
+    var newFileName by remember { mutableStateOf("") } // Нова назва файлу
 
-    // Сортування: "Тип" або "Дата"
+    // Опція сортування: "Тип" або "Дата"
     var sortOption by remember { mutableStateOf("Дата") }
+    
+    // Визначаємо відсортований список файлів
     val sortedFiles = files.let {
         when(sortOption) {
-            "Тип" -> it.sortedBy { f -> f.type }
-            else -> it.sortedByDescending { f -> f.addedDate }
+            "Тип" -> it.sortedBy { f -> f.type } // Сортування за типом
+            else -> it.sortedByDescending { f -> f.addedDate } // Сортування за датою (від найновішого)
         }
     }
 
-    // Для перегляду фото
-    var galleryIndex by remember { mutableStateOf(0) }
-    var showGallery by remember { mutableStateOf(false) }
+    // Змінні для показу галереї фото
+    var galleryIndex by remember { mutableStateOf(0) } // Індекс поточного фото в галереї
+    var showGallery by remember { mutableStateOf(false) } // Показувати або приховувати діалог галереї
 
     Column(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        // Відображаємо заголовок застосунку
         Text("Просунутий рівень: редагування та сортування файлів", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Кнопки для додавання фото та документів
         Row {
             Button(onClick = { imageLauncher.launch("image/*") }, modifier = Modifier.padding(end = 8.dp)) { Text("Додати фото") }
             Button(onClick = { documentLauncher.launch("*/*") }) { Text("Додати документ") }
@@ -95,6 +103,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Кнопки для вибору способу сортування
         Row {
             listOf("Дата", "Тип").forEach { option ->
                 Button(
@@ -107,6 +116,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Відображаємо список файлів у LazyColumn
         LazyColumn {
             itemsIndexed(sortedFiles) { index, file ->
                 Row(
@@ -117,18 +127,20 @@ fun AdvancedApp() {
                         .padding(8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    // Якщо файл - фото, відображаємо зображення
                     if (file.type == "Фото") {
                         Image(
                             painter = rememberAsyncImagePainter(file.uri),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(100.dp)
-                                .clickable { galleryIndex = index; showGallery = true },
+                                .clickable { galleryIndex = index; showGallery = true }, // Натискання на фото відкриває галерею
                             contentScale = ContentScale.Crop
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(file.name, modifier = Modifier.weight(1f).clickable { galleryIndex = index; showGallery = true })
+                        Text(file.name, modifier = Modifier.weight(1f).clickable { galleryIndex = index; showGallery = true }) // Назва фото
                     } else {
+                        // Якщо файл - документ, відкриваємо його через Intent
                         Text(file.name, modifier = Modifier.weight(1f).clickable {
                             val intent = Intent(Intent.ACTION_VIEW).apply {
                                 setDataAndType(file.uri, context.contentResolver.getType(file.uri))
@@ -138,6 +150,7 @@ fun AdvancedApp() {
                         })
                     }
 
+                    // Кнопка редагування назви файлу
                     Button(onClick = {
                         fileToRename = file
                         newFileName = file.name
@@ -147,18 +160,18 @@ fun AdvancedApp() {
         }
     }
 
-    // Галерея для фото
+    // Діалог галереї для перегляду фото
     if (showGallery) {
         Dialog(onDismissRequest = { showGallery = false }) {
             Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-                val imageFiles = sortedFiles.filter { it.type == "Фото" }
+                val imageFiles = sortedFiles.filter { it.type == "Фото" } // Відбираємо лише фото
                 imageFiles.getOrNull(galleryIndex)?.let { file ->
                     Image(
                         painter = rememberAsyncImagePainter(file.uri),
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
-                            .clickable { showGallery = false },
+                            .clickable { showGallery = false }, // Натискання на фото закриває галерею
                         contentScale = ContentScale.Fit
                     )
                 }
@@ -166,15 +179,15 @@ fun AdvancedApp() {
         }
     }
 
-    // Діалог редагування назви
+    // Діалог редагування назви файлу
     if (fileToRename != null) {
         AlertDialog(
             onDismissRequest = { fileToRename = null },
             title = { Text("Редагувати назву") },
-            text = { TextField(value = newFileName, onValueChange = { newFileName = it }, singleLine = true) },
+            text = { TextField(value = newFileName, onValueChange = { newFileName = it }, singleLine = true) }, // Поле для вводу нової назви
             confirmButton = {
                 Button(onClick = {
-                    // Створюємо новий список з оновленим ім'ям
+                    // Оновлюємо список файлів з новою назвою
                     files = files.map { if (it.uri == fileToRename!!.uri) it.copy(name = newFileName) else it }.toMutableList()
                     fileToRename = null
                 }) { Text("Зберегти") }
@@ -184,15 +197,15 @@ fun AdvancedApp() {
     }
 }
 
-// Допоміжна функція для отримання імені файлу
+// Допоміжна функція для отримання імені файлу з URI
 fun getFileName(context: Context, uri: Uri): String {
     var name: String? = null
-    val cursor = context.contentResolver.query(uri, arrayOf("_display_name"), null, null, null)
+    val cursor = context.contentResolver.query(uri, arrayOf("_display_name"), null, null, null) // Запит до контент-провайдера
     cursor?.use {
         if (it.moveToFirst()) {
             val index = it.getColumnIndex("_display_name")
             if (index != -1) name = it.getString(index)
         }
     }
-    return name ?: uri.lastPathSegment ?: "Файл"
+    return name ?: uri.lastPathSegment ?: "Файл" // Повертаємо ім'я або стандартне значення
 }

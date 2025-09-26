@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_11.composables
+package ua.kpi.practical_example_11.composables
 
 import android.util.Log
 import android.widget.Toast
@@ -21,12 +21,15 @@ import ua.kpi.practical_example_11.medium.AuthViewModelFactory
 
 @Composable
 fun MediumApp() {
+    // Отримуємо контекст активності для використання у Toast
     val context = LocalContext.current
 
 
+    // Створюємо ViewModel для авторизації з використанням фабрики
     val authViewModel: AuthViewModel = viewModel(
         factory = AuthViewModelFactory(context)
     )
+    // Створюємо змінні стану для введення логіну та паролю
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -34,9 +37,11 @@ fun MediumApp() {
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        // Якщо користувач не авторизований, показуємо форму входу
         if (authViewModel.token == null) {
             Text("Login", style = MaterialTheme.typography.titleLarge)
 
+            // Поле для введення імені користувача
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
@@ -45,6 +50,7 @@ fun MediumApp() {
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Поле для введення паролю з прихованим відображенням символів
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -55,6 +61,7 @@ fun MediumApp() {
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Кнопка входу, яка викликає метод login у ViewModel
             Button(
                 onClick = {
                     authViewModel.login(username, password) { error ->
@@ -66,8 +73,11 @@ fun MediumApp() {
                 Text("Login")
             }
         } else {
+            // Якщо користувач авторизований, показуємо інформацію про нього
             Text("Logged in as ${authViewModel.role}")
             Spacer(modifier = Modifier.height(8.dp))
+            
+            // Кнопка для завантаження захищених даних
             Button(onClick = {
                 authViewModel.loadProtectedData { error ->
                     Log.d("response", error.toString())
@@ -76,11 +86,15 @@ fun MediumApp() {
             }) {
                 Text("Load Protected Data")
             }
+            
+            // Відображаємо захищені дані, якщо вони доступні
             authViewModel.protectedData?.let {
 
                 Text(it.message)
             }
             Spacer(modifier = Modifier.height(16.dp))
+            
+            // Кнопка виходу з облікового запису
             Button(onClick = { authViewModel.logout() }) {
                 Text("Logout")
             }

@@ -1,4 +1,5 @@
-﻿package ua.kpi.practical_example_5.basicScreens
+package ua.kpi.practical_example_5.basicScreens
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,7 +25,7 @@ import ua.kpi.practical_example_5.Screen
 
 @Composable
 fun UserInfoScreen(navController: NavHostController) {
-    // Стани для текстових полів
+    // Створюємо змінні стану для зберігання значень полів вводу імені та email
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
@@ -34,31 +35,35 @@ fun UserInfoScreen(navController: NavHostController) {
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        // Відображаємо заголовок екрану
         Text("Інформація про користувача", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Поле вводу для імені користувача з підписом
         OutlinedTextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = { name = it },  // Оновлення стану при зміні тексту
             label = { Text("Ім'я") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()  // Заповнює всю доступну ширину
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Поле вводу для email користувача з підписом
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
+            onValueChange = { email = it },  // Оновлення стану при зміні тексту
             label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()  // Заповнює всю доступну ширину
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Кнопка для повернення до головного екрану
         Button(
-            onClick = { navController.navigate(Screen.BasicScreen.MainScreen.route) },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            onClick = { navController.navigate(Screen.BasicScreen.MainScreen.route) },  // Навігація на головний екран
+            modifier = Modifier.align(Alignment.CenterHorizontally)  // Вирівнювання кнопки по центру
         ) {
             Text("Повернутися в меню")
         }

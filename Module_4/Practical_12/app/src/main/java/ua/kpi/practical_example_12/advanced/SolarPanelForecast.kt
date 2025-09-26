@@ -1,3 +1,14 @@
-﻿package ua.kpi.practical_example_12.advanced
+package ua.kpi.practical_example_12.advanced
 
-data class SolarPanelForecast(val date: String, val powerKwh: Int, val status: String)
+// Оголошення data-класу для представлення прогнозу виробництва електроенергії сонячними панелями
+// Data-клас автоматично генерує методи equals(), hashCode(), toString() та copy()
+data class SolarPanelForecast(
+    // Дата, на яку зроблено прогноз (у форматі рядка)
+    val date: String,
+    
+    // Прогнозована кількість електроенергії в кіловат-годинах
+    val powerKwh: Int,
+    
+    // Статус прогнозу (наприклад, "stable", "increasing", "decreasing")
+    val status: String
+)

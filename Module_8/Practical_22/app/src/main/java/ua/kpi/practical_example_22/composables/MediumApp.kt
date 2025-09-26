@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_22.composables
+package ua.kpi.practical_example_22.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,27 +16,29 @@ import java.io.File
 
 @Composable
 fun MediumApp() {
-    // Стан для введення користувачем
+    // Стан для зберігання значень полів введення користувача
     var date by remember { mutableStateOf("") }
     var power by remember { mutableStateOf("") }
     var status by remember { mutableStateOf("") }
 
-    // Список зчитаних даних
+    // Стан для зберігання списку записів енергоспоживання
     var records by remember { mutableStateOf(listOf<EnergyRecord>()) }
 
-    // Gson для JSON-операцій
+    // Ініціалізація Gson для роботи з JSON
     val gson = Gson()
 
-    // Посилання на файл
+    // Отримання контексту застосунку для доступу до файлової системи
     val context = androidx.compose.ui.platform.LocalContext.current
+    // Створення шляху до файлу у внутрішній пам’яті застосунку
     val file = File(context.filesDir, "energy_data.json")
 
     Column(modifier = Modifier.padding(16.dp)) {
+        // Заголовок додаткового інтерфейсу
         Text("Введіть дані про енергоспоживання (JSON)", style = MaterialTheme.typography.titleMedium)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Поле для дати
+        // Поле для введення дати
         OutlinedTextField(
             value = date,
             onValueChange = { date = it },
@@ -46,7 +48,7 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Поле для потужності
+        // Поле для введення потужності
         OutlinedTextField(
             value = power,
             onValueChange = { power = it },
@@ -56,7 +58,7 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Поле для статусу
+        // Поле для введення статусу
         OutlinedTextField(
             value = status,
             onValueChange = { status = it },
@@ -66,11 +68,11 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Кнопка для збереження у JSON
+        // Кнопка для збереження даних у JSON файл
         Button(
             onClick = {
                 try {
-                    // Якщо файл існує — зчитуємо існуючі дані
+                    // Перевіряємо, чи існує файл; якщо так — зчитуємо поточний список записів
                     val currentList: MutableList<EnergyRecord> = if (file.exists()) {
                         val json = file.readText()
                         if (json.isNotEmpty()) {
@@ -79,17 +81,19 @@ fun MediumApp() {
                         } else mutableListOf()
                     } else mutableListOf()
 
-                    // Додаємо новий запис
+                    // Створюємо новий запис на основі введених даних
                     val newRecord = EnergyRecord(date, power.toDoubleOrNull() ?: 0.0, status)
                     currentList.add(newRecord)
+                    
+                    // Очищуємо поля введення після додавання запису
                     date = ""
                     power = ""
                     status = ""
 
-                    // Перезаписуємо файл оновленим списком
+                    // Записуємо оновлений список у файл JSON
                     file.writeText(gson.toJson(currentList))
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    e.printStackTrace() // Виводимо помилку у логи
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -99,7 +103,7 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Кнопка для читання з JSON
+        // Кнопка для завантаження даних з JSON файлу
         Button(
             onClick = {
                 if (file.exists()) {
@@ -110,7 +114,7 @@ fun MediumApp() {
                             records = gson.fromJson(json, type)
                         }
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        e.printStackTrace() // Виводимо помилку у логи
                     }
                 }
             },
@@ -121,12 +125,12 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // 🔥 Нова кнопка для видалення файлу
+        // 🔥 Нова кнопка для видалення файлу JSON
         Button(
             onClick = {
                 if (file.exists()) {
-                    file.delete() // видаляємо файл
-                    records = emptyList() // очищаємо список у пам’яті
+                    file.delete() // Видаляємо файл з пристрою
+                    records = emptyList() // Очищуємо список у пам’яті
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -137,14 +141,15 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Вивід списку записів
+        // Відображаємо заголовок для списку записів
         Text("Дані з файлу (JSON):", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Виводимо список записів у LazyColumn
         LazyColumn {
             items(records) { record ->
                 Text("Дата: ${record.date}, Потужність: ${record.power} кВт, Статус: ${record.status}")
-                Divider()
+                Divider() // Роздільник між записами
             }
         }
     }

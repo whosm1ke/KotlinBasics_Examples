@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_26.composables
+package ua.kpi.practical_example_26.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,36 +20,45 @@ import android.graphics.Color as AndroidColor
 fun MediumApp(
     isDarkTheme: Boolean,
 ) {
+    // Отримуємо поточний контекст для доступу до системних даних
     val context = LocalContext.current
+    
+    // Створюємо змінні стану для відображення показників пристрою
     var batteryLevel by remember { mutableStateOf(0) }
     var cpuLoad by remember { mutableStateOf(0) }
     var memoryUsage by remember { mutableStateOf(0) }
+    
+    // Ініціалізуємо утиліту для отримання даних пристрою
     val util = DeviceUtil()
 
-    // Збереження історії показників для графіка
+    // Створюємо списки для зберігання історичних даних графіків
     val cpuHistory = remember { mutableStateListOf<Entry>() }
     val memoryHistory = remember { mutableStateListOf<Entry>() }
     val batteryHistory = remember { mutableStateListOf<Entry>() }
 
+    // Запускаємо фоновий процес для оновлення даних
     LaunchedEffect(Unit) {
         var time = 0f
         while (true) {
+            // Отримуємо актуальні дані з пристрою
             batteryLevel = util.getBatteryLevel(context)
             cpuLoad = util.getCpuUsage()
             memoryUsage = util.getMemoryUsage(context)
 
-            // Додаємо точки на графік
+            // Додаємо нові точки на графік
             cpuHistory.add(Entry(time, cpuLoad.toFloat()))
             memoryHistory.add(Entry(time, memoryUsage.toFloat()))
             batteryHistory.add(Entry(time, batteryLevel.toFloat()))
-            if (cpuHistory.size > 20) { // обмежимо історію до 20 точок
+            
+            // Обмежуємо кількість точок на графіку до 20 для оптимізації
+            if (cpuHistory.size > 20) {
                 cpuHistory.removeAt(0)
                 memoryHistory.removeAt(0)
                 batteryHistory.removeAt(0)
             }
 
             time += 1f
-            delay(2000)
+            delay(2000) // Затримка між оновленнями (2 секунди)
         }
     }
 
@@ -60,7 +69,7 @@ fun MediumApp(
             .padding(16.dp)
     ) {
 
-        // Графіки ресурсів
+        // Відображаємо графіки ресурсів
         LazyColumn {
             item { UniversalResourceLineChart("CPU", cpuHistory, isDarkTheme) }
             item { UniversalResourceLineChart("Memory", memoryHistory, isDarkTheme) }
@@ -69,4 +78,3 @@ fun MediumApp(
 
     }
 }
-

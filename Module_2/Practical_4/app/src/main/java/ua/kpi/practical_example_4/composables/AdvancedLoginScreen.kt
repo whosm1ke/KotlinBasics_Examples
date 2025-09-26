@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_4.composables
+package ua.kpi.practical_example_4.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
@@ -21,7 +21,10 @@ import ua.kpi.practical_example_4.forms.RegistrationForm
 
 @Composable
 fun AdvancedLoginScreen() {
+    // Стан для визначення, чи знаходимося ми у режимі реєстрації
     var isRegisterMode by remember { mutableStateOf(false) }
+    
+    // Стан для показу індикатора завантаження
     var isLoading by remember { mutableStateOf(false) }
 
     Column(
@@ -31,6 +34,7 @@ fun AdvancedLoginScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Якщо у режимі реєстрації, відображаємо форму реєстрації
         if (isRegisterMode) {
             RegistrationForm(
                 onRegister = { name, email, password, confirmPassword ->
@@ -46,6 +50,7 @@ fun AdvancedLoginScreen() {
                 onSwitchToLogin = { isRegisterMode = false }
             )
         } else {
+            // Якщо у режимі входу, відображаємо форму авторизації
             LoginForm(
                 onLogin = { login, password ->
                     isLoading = true
@@ -57,6 +62,7 @@ fun AdvancedLoginScreen() {
             )
         }
 
+        // Якщо виконується завантаження, показуємо індикатор
         if (isLoading) {
             Spacer(modifier = Modifier.height(16.dp))
             CircularProgressIndicator()
@@ -65,6 +71,3 @@ fun AdvancedLoginScreen() {
 }
 
 // ======= Компоненти для просунутого рівня =======
-
-
-

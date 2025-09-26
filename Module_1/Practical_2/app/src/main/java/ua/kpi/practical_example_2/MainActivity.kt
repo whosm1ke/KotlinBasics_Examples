@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_2
+package ua.kpi.practical_example_2
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,25 +29,27 @@ import ua.kpi.practical_example_2.ui.theme.Practical_Example_2Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Встановлюємо вміст активності за допомогою Compose
         setContent {
             Practical_Example_2Theme {
+                // Створюємо змінну для відстеження обраного режиму відображення
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Наш перемикач
+                        // Відображаємо перемикач для вибору режиму
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлюємо стан при зміні вибору
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp)) // Додаємо простір між елементами
 
-                        // Відображення відповідного екрану
+                        // Відображаємо відповідний компонент залежно від обраного режиму
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicEnergyApp()
-                            DisplayFor.MIDDLE_LEVEL -> MediumEnergyApp()
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedEnergyApp()
+                            DisplayFor.BASIC_LEVEL -> BasicEnergyApp()        // Базовий рівень
+                            DisplayFor.MIDDLE_LEVEL -> MediumEnergyApp()      // Середній рівень
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedEnergyApp()   // Просунутий рівень
                         }
                     }
                 }
@@ -55,4 +57,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

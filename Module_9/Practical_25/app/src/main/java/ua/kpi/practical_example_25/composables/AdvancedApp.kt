@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_25.composables
+package ua.kpi.practical_example_25.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -21,14 +21,18 @@ import ua.kpi.practical_example_25.data.AdvancedCalculator
 
 @Composable
 fun AdvancedApp() {
+    // Стан для зберігання значень введення користувача
     var solarIrradiance by remember { mutableStateOf("") }
     var temperature by remember { mutableStateOf("") }
     var panelArea by remember { mutableStateOf("") }
 
+    // Стан для відстеження процесу завантаження та результату обчислення
     var isLoading by remember { mutableStateOf(false) }
     var result by remember { mutableStateOf<Double?>(null) }
 
+    // Отримуємо доступ до корутини для виконання асинхронних операцій
     val scope = rememberCoroutineScope()
+    // Створюємо екземпляр калькулятора для обчислення потужності
     val calculator = AdvancedCalculator()
 
     Column(
@@ -38,6 +42,7 @@ fun AdvancedApp() {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Поле вводу для сонячної радіації
         OutlinedTextField(
             value = solarIrradiance,
             onValueChange = { solarIrradiance = it },
@@ -47,6 +52,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Поле вводу для температури
         OutlinedTextField(
             value = temperature,
             onValueChange = { temperature = it },
@@ -56,6 +62,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Поле вводу для площі панелей
         OutlinedTextField(
             value = panelArea,
             onValueChange = { panelArea = it },
@@ -65,36 +72,39 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Кнопка для запуску обчислення
         Button(
             onClick = {
+                // Перетворюємо введені значення у числа, якщо не вдалося — використовуємо значення за замовчуванням
                 val irradianceVal = solarIrradiance.toDoubleOrNull() ?: 900.0  // моковані дані
                 val temperatureVal = temperature.toDoubleOrNull() ?: 20.0
                 val areaVal = panelArea.toDoubleOrNull() ?: 12.0
 
-                isLoading = true
-                result = null
+                isLoading = true  // Включаємо індикатор завантаження
+                result = null     // Очищуємо попередній результат
 
+                // Запускаємо обчислення в фоновому режимі
                 scope.launch {
                     val calculated = calculator.calculatePowerAsync(irradianceVal, temperatureVal, areaVal)
-                    result = calculated
-                    isLoading = false
+                    result = calculated  // Оновлюємо результат
+                    isLoading = false    // Вимикаємо індикатор завантаження
                 }
             },
             modifier = Modifier.fillMaxWidth().testTag("CalculateButton")
         ) {
-            Text("Отримати прогноз")
+            Text("Отримати прогноз")  // Текст кнопки
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Показуємо індикатор завантаження
+        // Відображаємо індикатор завантаження, коли обчислення триває
         if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.testTag("CircularProgressIndicator")
             )
         }
 
-        // Показуємо результат
+        // Відображаємо результат, якщо він доступний
         result?.let {
             Text(
                 text = "Прогнозована потужність: %.2f кВт".format(it),

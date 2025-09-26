@@ -24,25 +24,27 @@ import ua.kpi.practical_example_11.ui.theme.Practical_Example_11Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Встановлюємо вміст активності з використанням Compose
         setContent {
             Practical_Example_11Theme {
+                // Створюємо стан для вибору режиму відображення
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Наш перемикач
+                        // Відображаємо перемикач режимів
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлюємо стан при зміні вибору
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp)) // Простір між компонентами
 
-                        // Відображення відповідного екрану
+                        // Відображаємо відповідний екран залежно від обраного режиму
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp() // - для базового
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp() // - для середнього
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp() // - для просунутого
+                            DisplayFor.BASIC_LEVEL -> BasicApp() // Відображення для базового рівня
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp() // Відображення для середнього рівня
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp() // Відображення для просунутого рівня
                         }
                     }
                 }
@@ -50,4 +52,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

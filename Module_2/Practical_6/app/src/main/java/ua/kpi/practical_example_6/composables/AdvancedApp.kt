@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_6.composables
+package ua.kpi.practical_example_6.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -18,22 +18,23 @@ import ua.kpi.practical_example_6.components.SubmitButton
 
 @Composable
 fun AdvancedApp() {
-    // Стан для полів
+    // Створюємо стан для всіх полів форми з використанням remember для збереження значень між перерисуваннями
     var stationName by remember { mutableStateOf(TextFieldValue("")) }
     var operatorEmail by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var powerCapacity by remember { mutableStateOf(TextFieldValue("")) }
 
-    // Стан помилок
+    // Створюємо стан для відображення помилок у полях форми
     var stationNameError by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
     var powerError by remember { mutableStateOf(false) }
 
-    // Стан результату
+    // Створюємо стан для відстеження статусу подання форми та завантаження
     var isSubmitted by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
+    // Отримуємо корутинний скоп для запуску асинхронних операцій
     val scope = rememberCoroutineScope()
 
     Column(
@@ -42,77 +43,81 @@ fun AdvancedApp() {
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        // Заголовок
+        // Відображаємо заголовок форми
         FormHeader()
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Поля форми
+        // Відображаємо поле для вводу назви станції з валідацією
         StationNameField(stationName, stationNameError) { stationName = it; stationNameError = false }
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Відображаємо поле для вводу email оператора з валідацією
         EmailField(operatorEmail, emailError) { operatorEmail = it; emailError = false }
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Відображаємо поле для вводу пароля з валідацією
         PasswordField(password, passwordError) { password = it; passwordError = false }
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Відображаємо поле для вводу потужності станції з валідацією
         PowerField(powerCapacity, powerError) { powerCapacity = it; powerError = false }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Кнопка підтвердження з валідацією
+        // Кнопка надсилання форми з валідацією даних
         SubmitButton(
             onSubmit = {
-                isSubmitted = false
-                var valid = true
+                isSubmitted = false  // Скидаємо стан успішного подання
+                var valid = true     // Флаг валідності форми
 
-                // Валідація назви станції
+                // Валідація назви станції: перевіряємо, чи не порожнє значення
                 if (stationName.text.isBlank()) {
-                    stationNameError = true
-                    valid = false
+                    stationNameError = true  // Встановлюємо помилку
+                    valid = false            // Позначаємо форму як недійсну
                 }
 
-                // Валідація email
+                // Валідація email: перевіряємо наявність символів '@' та '.'
                 if (!operatorEmail.text.contains("@") || !operatorEmail.text.contains(".")) {
-                    emailError = true
-                    valid = false
+                    emailError = true       // Встановлюємо помилку
+                    valid = false           // Позначаємо форму як недійсну
                 }
 
-                // Валідація пароля (>=8 символів, велика літера, цифра)
+                // Валідація пароля: перевіряємо довжину, наявність великої літери та цифри
                 if (password.text.length < 8 ||
                     !password.text.any { it.isUpperCase() } ||
                     !password.text.any { it.isDigit() }
                 ) {
-                    passwordError = true
-                    valid = false
+                    passwordError = true    // Встановлюємо помилку
+                    valid = false           // Позначаємо форму як недійсну
                 }
 
-                // Валідація потужності
+                // Валідація потужності: перевіряємо, чи є числом і більше 0
                 val powerValue = powerCapacity.text.toIntOrNull()
                 if (powerValue == null || powerValue <= 0) {
-                    powerError = true
-                    valid = false
+                    powerError = true       // Встановлюємо помилку
+                    valid = false           // Позначаємо форму як недійсну
                 }
 
+                // Якщо всі валідації пройдені
                 if (valid) {
-                    // Імітуємо завантаження
+                    // Включаємо індикатор завантаження
                     isLoading = true
                     scope.launch {
-                        delay(2000) // пауза 2с
-                        isLoading = false
-                        isSubmitted = true
+                        delay(2000) // Імітуємо затримку 2 секунди
+                        isLoading = false   // Завершуємо завантаження
+                        isSubmitted = true  // Позначаємо успішне подання
                     }
                 }
             }
         )
 
-        // Індикатор завантаження
+        // Якщо форма знаходиться у стані завантаження, відображаємо індикатор
         if (isLoading) {
             Spacer(modifier = Modifier.height(16.dp))
             LoadingIndicator()
         }
 
-        // Повідомлення про результат
+        // Якщо форма успішно подана, показуємо повідомлення про успіх
         if (isSubmitted) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(

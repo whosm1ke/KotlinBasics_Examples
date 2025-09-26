@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_26.composables
+package ua.kpi.practical_example_26.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -13,40 +13,41 @@ import ua.kpi.practical_example_26.DisplayFor
 
 @Composable
 fun DisplayModeSelector(
-    // Текуче значення
+    // Текуче значення, що вибране користувачем
     selected: DisplayFor,
-    // Callback при зміні
+    // Callback, який викликається при зміні вибраного режиму
     onSelectedChange: (DisplayFor) -> Unit
 ) {
-    // Column з кнопками для перемикання
+    // Використовуємо Column для вертикального розташування елементів
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp)
-            .testTag("DisplayModeSelector"),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth()  // Заповнює всю доступну ширину
+            .padding(12.dp)   // Додає внутрішній відступ
+            .testTag("DisplayModeSelector"), // Мітка для тестування
+        horizontalAlignment = Alignment.CenterHorizontally  // Вирівнювання по центру по горизонталі
     ) {
+        // Виводимо заголовок для селектора режимів
         Text(
             text = "Вибір режиму відображення",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge  // Використовуємо стиль теми
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(12.dp))  // Простір між заголовком і кнопками
 
-        // Для кожного значення enum створюємо кнопку
+        // Проходимо по всіх значеннях enum DisplayFor і створюємо для кожного кнопку
         DisplayFor.values().forEach { mode ->
             Button(
-                onClick = { onSelectedChange(mode) },
+                onClick = { onSelectedChange(mode) },  // Обробник кліку, який викликає callback
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                // Робимо кнопку "активною", якщо це поточний режим
+                    .fillMaxWidth()  // Кнопка заповнює всю ширину
+                    .padding(vertical = 4.dp),  // Внутрішній відступ по вертикалі
+                // Кнопка вимкнена, якщо це поточний обраний режим (не можна обрати те саме)
                 enabled = mode != selected
             ) {
                 Text(text = when (mode) {
-                    DisplayFor.BASIC_LEVEL -> "Базовий рівень"
-                    DisplayFor.MIDDLE_LEVEL -> "Середній рівень"
-                    DisplayFor.ADVANCED_LEVEL -> "Просунутий рівень"
+                    DisplayFor.BASIC_LEVEL -> "Базовий рівень"  // Відображення назви для базового рівня
+                    DisplayFor.MIDDLE_LEVEL -> "Середній рівень"  // Відображення назви для середнього рівня
+                    DisplayFor.ADVANCED_LEVEL -> "Просунутий рівень"  // Відображення назви для просунутого рівня
                 })
             }
         }

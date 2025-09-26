@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_3.composables
+package ua.kpi.practical_example_3.composables
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,20 +12,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ua.kpi.practical_example_3.R
+
 @Composable
 fun AdvancedEnergyApp() {
-    // Стан програми
+    // Створення станів для програми:
+    // - power: потужність, що генерується (в кВт)
+    // - mode: режим роботи ("Денні", "Нічні", "Хмарні")
+    // - comments: коментарі до поточного режиму
     var power by remember { mutableStateOf(0) }
     var mode by remember { mutableStateOf("Денні") }
     var comments by remember { mutableStateOf("Все стабільно") }
 
-    // Головний layout
+    // Основний вертикальний layout для всієї програми
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Заголовок
+        // Відображення заголовка додатку
         Text(
             text = "Сонячна електростанція - Детальний прогноз",
             fontSize = 24.sp,
@@ -34,7 +38,7 @@ fun AdvancedEnergyApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Row для режимів з більш деталізованою логікою
+        // Ряд кнопок режимів роботи з можливістю вибору
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -45,7 +49,7 @@ fun AdvancedEnergyApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Зображення панелі
+        // Зображення сонячної панелі
         Image(
             painter = painterResource(id = R.drawable.solar_panel),
             contentDescription = "Сонячна панель",
@@ -56,12 +60,13 @@ fun AdvancedEnergyApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Інформаційна панель
+        // Відображення інформаційної картки з даними про потужність, режим та коментарі
         InfoCard(power, mode, comments)
     }
 }
 
-// Допоміжна функція - кнопка режиму
+// Компонент кнопки режиму:
+// При натисканні встановлюється новий режим, потужність і коментар
 @Composable
 fun ModeButton(label: String, value: Int, onClick: (Pair<String, Int>) -> Unit) {
     Button(
@@ -72,7 +77,8 @@ fun ModeButton(label: String, value: Int, onClick: (Pair<String, Int>) -> Unit) 
     }
 }
 
-// Допоміжна функція - картка з інформацією
+// Компонент інформаційної картки:
+// Відображає режим, прогнозовану потужність та коментар
 @Composable
 fun InfoCard(power: Int, mode: String, comments: String) {
     Card(

@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_13.composables
+package ua.kpi.practical_example_13.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,22 +16,25 @@ import kotlinx.coroutines.flow.map
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MediumApp() {
+    // Створюємо стан для потужності та статусу, які будуть оновлюватися в процесі роботи
     var power by remember { mutableStateOf(0f) }
     var status by remember { mutableStateOf("Очікування даних...") }
 
+    // Отримуємо scope для запуску корутин
     val scope = rememberCoroutineScope()
 
-    // Використання ViewModel-подібної логіки через remember
+    // Використовуємо remember для збереження потоку даних, щоб уникнути повторного створення
     val powerFlow = remember { getSolarPowerFlow() }
 
+    // Запускаємо корутину при першому виклику Composable-функції
     LaunchedEffect(Unit) {
         powerFlow
-            .map { it * 1.05f } // Наприклад, додаємо коефіцієнт прогнозу
-            .filter { it > 10f } // Фільтр для малих значень
-            .catch { e -> status = "Помилка: ${e.message}" } // Обробка помилок
+            .map { it * 1.05f } // Масштабуємо значення потужності з коефіцієнтом 1.05 (прогноз)
+            .filter { it > 10f } // Фільтруємо значення, щоб відкинути малі значення менше 10
+            .catch { e -> status = "Помилка: ${e.message}" } // Обробляємо помилки у потоці даних
             .collect { value ->
-                power = value
-                status = "Дані отримано успішно"
+                power = value // Оновлюємо стан потужності
+                status = "Дані отримано успішно" // Оновлюємо статус
             }
     }
 

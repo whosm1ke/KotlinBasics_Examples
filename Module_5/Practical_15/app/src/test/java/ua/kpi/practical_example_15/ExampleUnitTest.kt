@@ -12,6 +12,7 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
+        // Виконуємо перевірку, чи дорівнює результат додавання 2 + 2 числу 4
         assertEquals(4, 2 + 2)
     }
 }

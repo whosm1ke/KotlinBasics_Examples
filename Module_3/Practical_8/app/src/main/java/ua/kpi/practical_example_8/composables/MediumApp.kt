@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_8.composables
+package ua.kpi.practical_example_8.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,9 +22,10 @@ import ua.kpi.practical_example_8.viewModels.EnergyViewModel
 @Composable
 fun MediumApp() {
 
+    // Отримуємо контекст застосунку для створення бази даних
     val context = LocalContext.current
 
-    // Створення бази даних
+    // Створюємо базу даних з використанням Room через remember для запобігання повторному створенню
     val db = remember {
         androidx.room.Room.databaseBuilder(
             context,
@@ -33,30 +34,32 @@ fun MediumApp() {
         ).build()
     }
 
-    // Репозиторій
+    // Створюємо репозиторій для взаємодії з базою даних
     val repository = remember { EnergyRepository(db.energyDao()) }
 
-    // ViewModel через viewModel() + фабрика
+    // Ініціалізуємо ViewModel через фабрику, щоб передати репозиторій
     val viewModel: EnergyViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return EnergyViewModel(repository) as T
+                return EnergyViewModel(repository) as T // Перетворюємо тип
             }
         }
     )
 
-    // Стейти для введення
+    // Створюємо змінні для зберігання введених користувачем значень
     var inputPower by remember { mutableStateOf("") }
     var inputVoltage by remember { mutableStateOf("") }
     var inputTemp by remember { mutableStateOf("") }
 
+    // Отримуємо потужності, напруги та температури з ViewModel як ObservableState
     val powers by viewModel.powers.collectAsState()
     val voltages by viewModel.voltages.collectAsState()
     val temps by viewModel.temperatures.collectAsState()
 
+    // Основна колонка компонентів
     Column(modifier = Modifier.padding(16.dp)) {
-        // Введення Потужності
+        // Поле вводу для потужності
         OutlinedTextField(
             value = inputPower,
             onValueChange = { inputPower = it },
@@ -64,7 +67,7 @@ fun MediumApp() {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Введення Напруги
+        // Поле вводу для напруги
         OutlinedTextField(
             value = inputVoltage,
             onValueChange = { inputVoltage = it },
@@ -72,7 +75,7 @@ fun MediumApp() {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Введення Температури
+        // Поле вводу для температури
         OutlinedTextField(
             value = inputTemp,
             onValueChange = { inputTemp = it },
@@ -80,13 +83,18 @@ fun MediumApp() {
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Простір між елементами
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Кнопка для додавання введених значень
         Button(
             onClick = {
+                // Перевіряємо, чи можна перетворити введений текст у число і додаємо до ViewModel
                 inputPower.toDoubleOrNull()?.let { viewModel.addPower(it) }
                 inputVoltage.toDoubleOrNull()?.let { viewModel.addVoltage(it) }
                 inputTemp.toDoubleOrNull()?.let { viewModel.addTemperature(it) }
+                
+                // Очищуємо поля після додавання
                 inputPower = ""
                 inputVoltage = ""
                 inputTemp = ""
@@ -98,7 +106,7 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Списки
+        // Відображення списку потужностей
         Text("Потужності:", style = MaterialTheme.typography.titleMedium)
         LazyColumn {
             items(powers) { item ->
@@ -108,6 +116,7 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Відображення списку напруг
         Text("Напруги:", style = MaterialTheme.typography.titleMedium)
         LazyColumn {
             items(voltages) { item ->
@@ -117,6 +126,7 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Відображення списку температур
         Text("Температури:", style = MaterialTheme.typography.titleMedium)
         LazyColumn {
             items(temps) { item ->
@@ -125,7 +135,7 @@ fun MediumApp() {
         }
     }
 
-    // Завантаження всіх даних при старті
+    // Завантаження всіх даних при старті застосунку
     LaunchedEffect(Unit) {
         viewModel.loadAll()
     }

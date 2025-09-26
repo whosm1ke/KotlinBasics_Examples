@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_4.composables
+package ua.kpi.practical_example_4.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,35 +16,37 @@ import ua.kpi.practical_example_4.DisplayFor
 
 @Composable
 fun DisplayModeSelector(
-    // Текуче значення
+    // Текуче значення, що вибране користувачем
     selected: DisplayFor,
-    // Callback при зміні
+    // Callback функція, яка викликається при зміні вибору режиму
     onSelectedChange: (DisplayFor) -> Unit
 ) {
-    // Column з кнопками для перемикання
+    // Використовуємо Column для вертикального розташування елементів
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth()  // Заповнює весь доступний простір по ширині
+            .padding(12.dp),  // Додає внутрішній відступ
+        horizontalAlignment = Alignment.CenterHorizontally  // Вирівнювання по центру по горизонталі
     ) {
+        // Виводимо заголовок для селектора режимів
         Text(
             text = "Вибір режиму відображення",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge  // Використовуємо стандартну тему тексту
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(12.dp))  // Додаємо простір між заголовком і кнопками
 
-        // Для кожного значення enum створюємо кнопку
+        // Проходимо по всіх значеннях enum DisplayFor та створюємо кнопки для кожного
         DisplayFor.values().forEach { mode ->
             Button(
-                onClick = { onSelectedChange(mode) },
+                onClick = { onSelectedChange(mode) },  // Обробник кліку, який викликає callback з новим значенням
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                // Робимо кнопку "активною", якщо це поточний режим
+                    .fillMaxWidth()  // Кнопка заповнює весь простір по ширині
+                    .padding(vertical = 4.dp),  // Внутрішній відступ по вертикалі
+                // Кнопка є активною, якщо поточний режим не дорівнює обраному
                 enabled = mode != selected
             ) {
+                // Виводимо текст на кнопці залежно від режиму
                 Text(text = when (mode) {
                     DisplayFor.BASIC_LEVEL -> "Базовий рівень"
                     DisplayFor.MIDDLE_LEVEL -> "Середній рівень"

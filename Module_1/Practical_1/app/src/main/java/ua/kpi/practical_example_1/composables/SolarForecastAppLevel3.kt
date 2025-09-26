@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_1.composables
+package ua.kpi.practical_example_1.composables
 
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.runtime.Composable
@@ -23,46 +23,46 @@ import kotlin.random.Random
 
 @Composable
 fun SolarForecastAppLevel3() {
-    // State для збереження потужності
+    // Створюємо стан для зберігання прогнозу потужності, ініціалізуємо значення 0
     var powerForecast by remember { mutableStateOf(0) }
 
-    // Анімація зміни значення потужності
+    // Анімуємо зміну значення потужності при зміні, щоб забезпечити плавний перехід між значеннями
     val animatedPower by animateIntAsState(
-        targetValue = powerForecast,
-        label = "PowerAnimation"
+        targetValue = powerForecast, // Цільове значення для анімації
+        label = "PowerAnimation" // Мітка для відлагодження
     )
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .fillMaxSize() // Заповнює весь доступний простір
+            .padding(20.dp), // Додає внутрішній відступ
+        horizontalAlignment = Alignment.CenterHorizontally, // Вирівнювання по центру горизонтально
+        verticalArrangement = Arrangement.Center // Вирівнювання по центру вертикально
     ) {
-        // Заголовок
+        // Відображаємо заголовок додатку
         Text(
             text = "Сонячна електростанція",
             fontSize = 26.sp,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary // Використовуємо первинний колір теми
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Простір між елементами
 
-        // Текст із плавною анімацією числа
+        // Відображаємо прогноз потужності з анімацією
         Text(
             text = "Прогноз потужності: $animatedPower Вт",
             fontSize = 22.sp,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground // Колір тексту відповідно до теми
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp)) // Простір між елементами
 
-        // Кнопка MaterialTheme
+        // Кнопка для оновлення прогнозу
         Button(onClick = {
-            // При натисканні оновлюємо випадковим числом
+            // При натисканні на кнопку генеруємо нове випадкове значення потужності в діапазоні 100-5000 Вт
             powerForecast = Random.nextInt(100, 5000)
         }) {
-            Text("Оновити прогноз")
+            Text("Оновити прогноз") // Текст кнопки
         }
     }
 }

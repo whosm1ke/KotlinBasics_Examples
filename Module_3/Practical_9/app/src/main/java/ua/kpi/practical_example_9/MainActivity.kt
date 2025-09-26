@@ -29,25 +29,27 @@ import ua.kpi.practical_example_9.ui.theme.Practical_Example_9Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Встановлюємо контент активності за допомогою Compose
         setContent {
             Practical_Example_9Theme {
+                // Створюємо стан для вибору режиму відображення
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Наш перемикач
+                        // Відображаємо перемикач для вибору рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлюємо стан при зміні вибору
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp)) // Додаємо простір між елементами
 
-                        // Відображення відповідного екрану
+                        // Відображаємо відповідний компонент в залежності від обраного рівня
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp() // - для базового
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp() // - для середнього
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp() // - для просунутого
+                            DisplayFor.BASIC_LEVEL -> BasicApp() // Відображення базового рівня
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp() // Відображення середнього рівня
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp() // Відображення просунутого рівня
                         }
                     }
                 }
@@ -55,4 +57,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

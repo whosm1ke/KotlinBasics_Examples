@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_23.composables
+package ua.kpi.practical_example_23.composables
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -19,47 +19,49 @@ import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun BasicApp() {
+    // Отримуємо поточний контекст застосунку для доступу до системних функцій
     val context = LocalContext.current
 
-    // Список URI фотографій для відображення
+    // Створюємо змінну стану для зберігання URI вибраних фотографій
     var imageUris by remember { mutableStateOf(listOf<Uri>()) }
 
-    // Лаунчер для вибору зображення з пам'яті
+    // Створюємо лаунчер для отримання результатів вибору зображення з пам'яті
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            // Додаємо вибране фото у список
+            // Додаємо вибране фото у список, якщо воно існує
             imageUris = imageUris + it
         }
     }
 
     Column {
+        // Відображаємо заголовок застосунку
         Text("Базовий рівень: завантаження та перегляд фотографій", style = MaterialTheme.typography.titleMedium)
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp)) // Відступ між елементами
 
-        // Кнопка для вибору фото
+        // Кнопка для виклику меню вибору зображення
         Button(onClick = { launcher.launch("image/*") }) {
             Text("Додати фото")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Відступ після кнопки
 
-        // Відображення фотографій у списку
+        // Створюємо вертикальний список для відображення зображень
         LazyColumn {
             items(imageUris) { uri ->
+                // Відображаємо кожне зображення з використанням Coil для завантаження
                 Image(
-                    painter = rememberAsyncImagePainter(uri),
-                    contentDescription = null,
+                    painter = rememberAsyncImagePainter(uri), // Створюємо пейнтер для завантаження зображення
+                    contentDescription = null, // Відсутність опису для доступності
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp) // можна залишити фіксовану висоту
-                        .padding(4.dp),
-                    contentScale = ContentScale.Fit // зображення поміститься цілком
+                        .fillMaxWidth() // Заповнюємо ширину контейнера
+                        .height(200.dp) // Фіксована висота зображення
+                        .padding(4.dp), // Внутрішній відступ
+                    contentScale = ContentScale.Fit // Зображення масштабується, щоб поміститись у контейнер
                 )
             }
         }
-
     }
 }

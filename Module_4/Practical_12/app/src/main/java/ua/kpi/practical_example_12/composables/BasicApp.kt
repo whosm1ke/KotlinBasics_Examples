@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_12.composables
+package ua.kpi.practical_example_12.composables
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -19,11 +19,16 @@ import ua.kpi.practical_example_12.basic.SolarPanelForecast
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BasicApp() {
+    // Отримуємо контекст додатку для перевірки підключення до інтернету
     val context = LocalContext.current
-    var forecast by remember { mutableStateOf<SolarPanelForecast?>(null) } // збережений прогноз
+    
+    // Стан для зберігання прогнозу сонячної електростанції
+    var forecast by remember { mutableStateOf<SolarPanelForecast?>(null) }
+    
+    // Стан для керування відображенням Snackbar (сповіщення)
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Scaffold — каркас з Snackbar
+    // Scaffold — головний контейнер з верхньою панеллю та Snackbar
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
@@ -39,21 +44,21 @@ fun BasicApp() {
             verticalArrangement = Arrangement.Center
         ) {
 
-            // Кнопка отримання прогнозу
+            // Кнопка для отримання прогнозу
             Button(onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    // 1. Перевірка інтернету
+                    // 1. Перевірка наявності підключення до Інтернету
                     if (!isInternetAvailable(context)) {
                         snackbarHostState.showSnackbar("Немає підключення до Інтернету")
-                        return@launch
+                        return@launch // Якщо немає інтернету — вихід з функції
                     }
 
                     try {
-                        // 2. Виконання запиту через Retrofit
+                        // 2. Виконання запиту до API через Retrofit
                         val response = RetrofitClient.api.getTodayForecast()
-                        forecast = response
+                        forecast = response // Зберігаємо отриманий прогноз у стані
                     } catch (e: Exception) {
-                        // Якщо сталася помилка (сервер недоступний, JSON некоректний і т.д.)
+                        // Якщо сталася помилка (наприклад, сервер недоступний або некоректна відповідь)
                         snackbarHostState.showSnackbar("Помилка: ${e.message}")
                     }
                 }
@@ -63,7 +68,7 @@ fun BasicApp() {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Відображення результату
+            // Відображення отриманого прогнозу, якщо він існує
             forecast?.let {
                 Text("Дата: ${it.date}")
                 Text("Потужність: ${it.powerKwh} кВт·год")
@@ -73,11 +78,17 @@ fun BasicApp() {
     }
 }
 
-// Функція перевірки доступу до інтернету
+// Функція перевірки наявності підключення до Інтернету
 fun isInternetAvailable(context: Context): Boolean {
+    // Отримуємо сервіс керування мережевими підключеннями
     val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    
+    // Отримуємо активну мережу
     val network = connectivityManager.activeNetwork ?: return false
+    
+    // Отримуємо можливості активної мережі
     val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+    
+    // Перевіряємо, чи має мережа підтримку доступу до Інтернету
     return activeNetwork.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
 }
-

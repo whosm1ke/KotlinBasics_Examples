@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_6.composables
+package ua.kpi.practical_example_6.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,17 +10,19 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MediumApp() {
+    // Створюємо змінні стану для полів введення
     var stationName by remember { mutableStateOf(TextFieldValue("")) }
     var operatorEmail by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var powerCapacity by remember { mutableStateOf(TextFieldValue("")) }
 
-    // Стан помилок
+    // Стан помилок для кожного поля
     var stationNameError by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf(false) }
     var passwordError by remember { mutableStateOf(false) }
     var powerError by remember { mutableStateOf(false) }
 
+    // Стан, що вказує, чи була надіслана форма
     var isSubmitted by remember { mutableStateOf(false) }
 
     Column(
@@ -29,7 +31,7 @@ fun MediumApp() {
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        // Заголовок
+        // Відображаємо заголовок додатку
         Text(
             text = "Реєстрація сонячної електростанції",
             style = MaterialTheme.typography.headlineSmall
@@ -42,12 +44,13 @@ fun MediumApp() {
             value = stationName,
             onValueChange = {
                 stationName = it
-                stationNameError = false
+                stationNameError = false // Скидаємо помилку при введенні
             },
             label = { Text("Назва станції") },
             isError = stationNameError,
             modifier = Modifier.fillMaxWidth()
         )
+        // Підпис до поля назви станції
         Text(
             text = "Введіть офіційну назву вашої СЕС",
             style = MaterialTheme.typography.bodySmall,
@@ -56,7 +59,7 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Використовуємо Row для Email + Пароль поруч
+        // Використовуємо Row для розміщення Email та Пароля поруч
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -66,12 +69,13 @@ fun MediumApp() {
                     value = operatorEmail,
                     onValueChange = {
                         operatorEmail = it
-                        emailError = false
+                        emailError = false // Скидаємо помилку при введенні
                     },
                     label = { Text("Email оператора") },
                     isError = emailError,
                     modifier = Modifier.fillMaxWidth()
                 )
+                // Підпис до поля Email
                 Text(
                     text = if (emailError) "Некоректний email" else "Формат: example@mail.com",
                     style = MaterialTheme.typography.bodySmall,
@@ -84,13 +88,14 @@ fun MediumApp() {
                     value = password,
                     onValueChange = {
                         password = it
-                        passwordError = false
+                        passwordError = false // Скидаємо помилку при введенні
                     },
                     label = { Text("Пароль") },
                     isError = passwordError,
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = PasswordVisualTransformation() // приховуємо символи
+                    visualTransformation = PasswordVisualTransformation() // Приховуємо символи пароля
                 )
+                // Підпис до поля пароля
                 Text(
                     text = if (passwordError) "Пароль занадто короткий" else "Мін. довжина: 6 символів",
                     style = MaterialTheme.typography.bodySmall,
@@ -106,12 +111,13 @@ fun MediumApp() {
             value = powerCapacity,
             onValueChange = {
                 powerCapacity = it
-                powerError = false
+                powerError = false // Скидаємо помилку при введенні
             },
             label = { Text("Потужність станції (кВт)") },
             isError = powerError,
             modifier = Modifier.fillMaxWidth()
         )
+        // Підпис до поля потужності
         Text(
             text = if (powerError) "Введіть число більше 0" else "Наприклад: 5000",
             style = MaterialTheme.typography.bodySmall,
@@ -120,13 +126,13 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Кнопка підтвердження
+        // Кнопка підтвердження реєстрації
         Button(
             onClick = {
-                isSubmitted = false
-                var valid = true
+                isSubmitted = false // Скидаємо стан відправлення
+                var valid = true // Прапорець валідності
 
-                // Валідація
+                // Валідація полів
                 if (stationName.text.isBlank()) {
                     stationNameError = true
                     valid = false
@@ -146,7 +152,7 @@ fun MediumApp() {
                 }
 
                 if (valid) {
-                    isSubmitted = true
+                    isSubmitted = true // Якщо валідація пройшла, встановлюємо прапорець успішного відправлення
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -154,7 +160,7 @@ fun MediumApp() {
             Text("Зареєструвати")
         }
 
-        // Повідомлення про результат
+        // Відображаємо повідомлення про успішну реєстрацію
         if (isSubmitted) {
             Spacer(modifier = Modifier.height(12.dp))
             Text(

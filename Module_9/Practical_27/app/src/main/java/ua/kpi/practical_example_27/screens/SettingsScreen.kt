@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_27.screens
+package ua.kpi.practical_example_27.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -13,16 +13,23 @@ import ua.kpi.practical_example_27.viewModel.ForecastViewModel
 
 @Composable
 fun SettingsScreen(viewModel: ForecastViewModel) {
-    val context = LocalContext.current // Отримуємо контекст для Toast
+    // Отримуємо поточний контекст для відображення Toast-повідомлень
+    val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        // Відображаємо заголовок екрану налаштувань
         Text("Налаштування та експорт", style = MaterialTheme.typography.titleMedium)
+        
+        // Додаємо простір між заголовком і кнопкою
         Spacer(modifier = Modifier.height(16.dp))
+        
+        // Кнопка для експорту даних у форматі CSV
         Button(onClick = {
-            // Викликаємо фейковий метод експорту CSV
+            // Викликаємо метод експорту CSV з ViewModel
+            // Передаємо анонімну функцію як callback-функцію для обробки результату
             viewModel.exportCSV { message ->
-                // Показуємо Toast з повідомленням користувачу
-                // У повідомленні зазначено, що файл фактично не згенеровано
+                // Показуємо Toast-повідомлення користувачеві з отриманим повідомленням
+                // Додаємо пояснення, що файл не був фактично створений (це симуляція)
                 Toast.makeText(
                     context,
                     "$message (Файл фактично не створено, це симуляція)",
@@ -30,6 +37,7 @@ fun SettingsScreen(viewModel: ForecastViewModel) {
                 ).show()
             }
         }) {
+            // Текст на кнопці для експорту
             Text("Експорт прогнозів у CSV")
         }
     }

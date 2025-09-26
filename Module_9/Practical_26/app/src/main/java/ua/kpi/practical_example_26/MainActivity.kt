@@ -29,38 +29,39 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // Глобальний стан теми
+            // Створення глобального стану для вибору теми (світла/темна)
             var darkTheme by remember { mutableStateOf(false) }
+            // Створення глобального стану для вибору рівня складності додатку
             var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
-            // Тема динамічно реагує на darkTheme
+            // Встановлення теми додатку на основі значення darkTheme
             Practical_Example_26Theme(darkTheme = darkTheme) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
 
-                        // Перемикач рівня складності
+                        // Відображення селектора рівня складності додатку
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлення стану при зміні вибору
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Перемикач теми на верхньому рівні
+                        // Відображення перемикача теми лише для середнього та просунутого рівнів
                         if (displayFor == DisplayFor.MIDDLE_LEVEL || displayFor == DisplayFor.ADVANCED_LEVEL) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(if (darkTheme) "Темна тема" else "Світла тема")
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Switch(
                                     checked = darkTheme,
-                                    onCheckedChange = { darkTheme = it } // зміна глобальної теми
+                                    onCheckedChange = { darkTheme = it } // Оновлення стану теми при зміні перемикача
                                 )
                             }
                         }
 
 
-                        // Відображення UI відповідно до рівня
+                        // Відображення відповідного UI залежно від обраного рівня складності
                         when (displayFor) {
                             DisplayFor.BASIC_LEVEL -> BasicApp()
                             DisplayFor.MIDDLE_LEVEL -> MediumApp(

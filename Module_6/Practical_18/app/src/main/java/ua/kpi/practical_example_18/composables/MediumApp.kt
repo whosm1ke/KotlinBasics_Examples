@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_18.composables
+package ua.kpi.practical_example_18.composables
 
 import android.Manifest
 import android.app.AlarmManager
@@ -32,9 +32,11 @@ import kotlin.random.Random
 
 @Composable
 fun MediumApp() {
+    // Отримуємо поточний контекст за допомогою LocalContext
     val context = LocalContext.current
 
     Column {
+        // Відображення заголовка для середнього рівня
         Text("Середній рівень: планування та категоризація сповіщень")
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -68,6 +70,7 @@ fun MediumApp() {
 
 // ------------------ Планування сповіщення ------------------
 fun scheduleNotification(context: Context, category: String, message: String, delaySeconds: Int) {
+    // Створення OneTimeWorkRequest для відправки сповіщення через WorkManager
     val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
         .setInitialDelay(delaySeconds.toLong(), TimeUnit.SECONDS)
         .setInputData(
@@ -83,8 +86,10 @@ fun scheduleNotification(context: Context, category: String, message: String, de
         )
         .build()
 
+    // Додавання задачі до WorkManager для виконання у майбутньому
     WorkManager.getInstance(context).enqueue(workRequest)
 
+    // Виведення Toast-повідомлення про заплановане сповіщення
     Toast.makeText(
         context,
         "Сповіщення «$category» заплановано на $delaySeconds секунд",
@@ -97,10 +102,12 @@ class NotificationWorker(appContext: Context, params: WorkerParameters) :
     Worker(appContext, params) {
 
     override fun doWork(): Result {
+        // Отримуємо дані з вхідних параметрів
         val title = inputData.getString("title") ?: "Сонячна станція"
         val message = inputData.getString("message") ?: "Нове сповіщення"
         val channel = inputData.getString("channel") ?: DisplayFor.MIDDLE_LEVEL.toString()
 
+        // Створюємо builder для сповіщення
         val builder = NotificationCompat.Builder(applicationContext, channel)
             .setSmallIcon(R.drawable.outline_adjust_24)
             .setContentTitle(title)
@@ -108,17 +115,19 @@ class NotificationWorker(appContext: Context, params: WorkerParameters) :
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
-
+        // Перевіряємо, чи надано дозвіл на відображення сповіщень
         if (ActivityCompat.checkSelfPermission(
                 applicationContext,
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+            // Відправляємо сповіщення через NotificationManagerCompat
             with(NotificationManagerCompat.from(applicationContext)) {
                 notify(Random.nextInt(), builder.build())
             }
         }
 
+        // Повертаємо успішний результат завершення роботи
         return Result.success()
     }
 }

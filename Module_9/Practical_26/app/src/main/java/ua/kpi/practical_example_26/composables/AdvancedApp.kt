@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_26.composables
+package ua.kpi.practical_example_26.composables
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -24,43 +24,46 @@ import kotlin.random.Random
 fun AdvancedApp(
     isDarkTheme: Boolean,
 ) {
+    // Отримуємо поточний контекст для доступу до системних даних
     val context = LocalContext.current
+    // Створюємо екземпляр утиліти для отримання інформації про пристрій
     val util = DeviceUtil()
 
-    // Поточні значення ресурсів
+    // Стан для зберігання поточних значень ресурсів
     var batteryLevel by remember { mutableStateOf(0) }
     var cpuLoad by remember { mutableStateOf(0) }
     var memoryUsage by remember { mutableStateOf(0) }
     var networkUsage by remember { mutableStateOf(0) }
 
-    // Історія для графіків
+    // Списки для зберігання історії значень ресурсів (для графіків)
     val cpuHistory = remember { mutableStateListOf<Entry>() }
     val memoryHistory = remember { mutableStateListOf<Entry>() }
     val batteryHistory = remember { mutableStateListOf<Entry>() }
     val networkHistory = remember { mutableStateListOf<Entry>() }
 
-    // Анімації для плавної зміни прогресу
+    // Анімовані значення для плавного відображення прогресу
     val animatedCpu by animateFloatAsState(targetValue = cpuLoad.toFloat())
     val animatedMemory by animateFloatAsState(targetValue = memoryUsage.toFloat())
     val animatedBattery by animateFloatAsState(targetValue = batteryLevel.toFloat())
     val animatedNetwork by animateFloatAsState(targetValue = networkUsage.toFloat())
 
-    // Асинхронне оновлення даних
+    // Запускаємо фонову задачу для регулярного оновлення даних
     LaunchedEffect(Unit) {
-        var time = 0f
+        var time = 0f // Змінна для відстеження часу на графіку
         while (true) {
+            // Оновлюємо значення ресурсів
             batteryLevel = util.getBatteryLevel(context)
             cpuLoad = util.getCpuUsage()
             memoryUsage = util.getMemoryUsage(context)
-            networkUsage = Random.nextInt(0, 100)
+            networkUsage = Random.nextInt(0, 100) // Випадкове значення для мережевого використання
 
-            // Додаємо точки на графіки
+            // Додаємо нові точки на графіки
             cpuHistory.add(Entry(time, cpuLoad.toFloat()))
             memoryHistory.add(Entry(time, memoryUsage.toFloat()))
             batteryHistory.add(Entry(time, batteryLevel.toFloat()))
             networkHistory.add(Entry(time, networkUsage.toFloat()))
 
-            // Обмежуємо історію до 20 точок
+            // Обмежуємо історію до 20 точок для ефективності
             if (cpuHistory.size > 20) {
                 cpuHistory.removeAt(0)
                 memoryHistory.removeAt(0)
@@ -68,8 +71,8 @@ fun AdvancedApp(
                 networkHistory.removeAt(0)
             }
 
-            time += 1f
-            delay(2000)
+            time += 1f // Збільшуємо час для наступної точки
+            delay(2000) // Затримка 2 секунди перед наступним оновленням
         }
     }
 
@@ -80,7 +83,7 @@ fun AdvancedApp(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        // Кастомні індикатори з анімацією
+        // Відображаємо анімовані індикатори ресурсів
         AnimatedResourceBar("CPU", animatedCpu, MaterialTheme.colorScheme.primary)
         AnimatedResourceBar("Memory", animatedMemory, MaterialTheme.colorScheme.secondary)
         AnimatedResourceBar("Battery", animatedBattery, MaterialTheme.colorScheme.tertiary)
@@ -98,7 +101,7 @@ fun AdvancedApp(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Графіки ресурсів
+        // Відображаємо графіки ресурсів у списку
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxSize()
@@ -110,4 +113,3 @@ fun AdvancedApp(
         }
     }
 }
-

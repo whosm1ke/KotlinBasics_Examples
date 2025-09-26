@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_9.composables
+package ua.kpi.practical_example_9.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,32 +35,35 @@ import ua.kpi.practical_example_9.advanced.SolarViewModel
 
 @Composable
 fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
+    // Отримуємо стан прогнозів з ViewModel, автоматично оновлюється при зміні даних
     val forecasts by viewModel.forecasts.collectAsState()
 
+    // Змінні для управління фільтром і сортуванням
     var filterDay by remember { mutableStateOf("") }
     var sortDescending by remember { mutableStateOf(false) }
 
+    // Змінні для нового прогнозу, що додається
     var newDay by remember { mutableStateOf("") }
     var newPower by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("Просунутий рівень: агрегація, кешування, бізнес-логіка")
 
-        // Фільтр і сортування
+        // Рядок з полем фільтрації та кнопкою сортування
         Row {
             OutlinedTextField(
                 value = filterDay,
                 onValueChange = {
                     filterDay = it
-                    viewModel.filterByDay(it)
+                    viewModel.filterByDay(it)  // Викликає метод фільтрації у ViewModel
                 },
                 label = { Text("Фільтр по дню") },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f)  // Займає всю доступну ширину
             )
             Spacer(Modifier.width(8.dp))
             Button(onClick = {
                 sortDescending = !sortDescending
-                viewModel.sortByPower(sortDescending)
+                viewModel.sortByPower(sortDescending)  // Переключає порядок сортування і викликає метод у ViewModel
             }) {
                 Text(if (sortDescending) "Сортувати ↑" else "Сортувати ↓")
             }
@@ -74,7 +77,7 @@ fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
                 value = newDay,
                 onValueChange = { newDay = it },
                 label = { Text("День") },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f)  // Займає всю доступну ширину
             )
             Spacer(Modifier.width(8.dp))
             OutlinedTextField(
@@ -82,13 +85,13 @@ fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
                 onValueChange = { newPower = it },
                 label = { Text("Потужність") },
                 modifier = Modifier.width(120.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)  // Встановлює числовий тип клавіатури
             )
             Spacer(Modifier.width(8.dp))
             Button(onClick = {
-                val power = newPower.toDoubleOrNull()
-                if (newDay.isNotBlank() && power != null) {
-                    viewModel.addForecast(SolarForecast(forecasts.size + 1, newDay, power))
+                val power = newPower.toDoubleOrNull()  // Перетворюємо введене значення на число
+                if (newDay.isNotBlank() && power != null) {  // Перевіряємо, чи заповнені поля
+                    viewModel.addForecast(SolarForecast(forecasts.size + 1, newDay, power))  // Додаємо новий прогноз
                     newDay = ""
                     newPower = ""
                 }
@@ -99,23 +102,23 @@ fun AdvancedApp(viewModel: SolarViewModel = viewModel()) {
 
         Spacer(Modifier.height(16.dp))
 
-        // Кнопка завантаження всіх прогнозів
+        // Кнопка для оновлення всіх прогнозів з сервера
         Button(onClick = { viewModel.loadForecasts(forceRefresh = true) }) {
             Text("Завантажити прогнози")
         }
 
         Spacer(Modifier.height(16.dp))
 
-        // Список прогнозів
+        // Список прогнозів з можливістю видалення
         LazyColumn {
             items(forecasts) { forecast ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween  // Розміщує елементи на краях
                 ) {
                     Text("${forecast.day}: ${forecast.predictedPower} кВт")
                     IconButton(onClick = { viewModel.deleteForecast(forecast.id) }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Видалити")
+                        Icon(Icons.Default.Delete, contentDescription = "Видалити")  // Іконка видалення
                     }
                 }
             }

@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_27.screens
+package ua.kpi.practical_example_27.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -11,9 +11,11 @@ import ua.kpi.practical_example_27.viewModel.ForecastViewModel
 
 @Composable
 fun MainMenuScreen(viewModel: ForecastViewModel) {
-    var currentScreen by remember { mutableStateOf("forecast") } // forecast / history / analytics / settings
+    // Створення стану для відстеження поточного екрана (forecast, history, analytics, settings)
+    var currentScreen by remember { mutableStateOf("forecast") }
 
     Column(modifier = Modifier.fillMaxSize()) {
+        // Верхня панель з кнопками для переходу між екранами
         Row(modifier = Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.SpaceAround) {
             Button(onClick = { currentScreen = "forecast" }) { Text("Прогноз") }
             Button(onClick = { currentScreen = "history" }) { Text("Історія") }
@@ -22,7 +24,7 @@ fun MainMenuScreen(viewModel: ForecastViewModel) {
         }
         Divider()
 
-        // Відображення поточного екрану
+        // Відображення поточного екрану в залежності від стану currentScreen
         when (currentScreen) {
             "forecast" -> ForecastScreen(viewModel)
             "history" -> HistoryScreen(viewModel)

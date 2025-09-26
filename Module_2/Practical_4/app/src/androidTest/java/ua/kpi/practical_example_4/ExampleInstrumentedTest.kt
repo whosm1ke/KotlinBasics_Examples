@@ -17,8 +17,12 @@ import org.junit.Assert.*
 class ExampleInstrumentedTest {
     @Test
     fun useAppContext() {
-        // Context of the app under test.
+        // Отримуємо контекст тестування, використовуючи InstrumentationRegistry
+        // Це дозволяє отримати доступ до контексту додатку, який тестується
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        
+        // Перевіряємо, чи збігається назва пакета додатка з очікуваним значенням
+        // Це гарантує, що тест працює на правильному додатку
         assertEquals("ua.kpi.practical_example_4", appContext.packageName)
     }
 }

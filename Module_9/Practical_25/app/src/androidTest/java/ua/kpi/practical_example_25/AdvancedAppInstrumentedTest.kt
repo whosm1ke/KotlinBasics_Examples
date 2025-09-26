@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_25
+package ua.kpi.practical_example_25
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
@@ -22,13 +22,13 @@ class AdvancedAppInstrumentedTest {
      * Допоміжна функція: перемикаємо на AdvancedApp через DisplayModeSelector
      */
     private fun switchToAdvancedApp() {
-        // Чекаємо селектор
+        // Чекаємо, поки з'явиться селектор режимів відображення (DisplayModeSelector)
         composeTestRule.onNodeWithTag("DisplayModeSelector").assertExists()
 
-        // Клікаємо на кнопку "Просунутий рівень"
+        // Клікаємо на кнопку "Просунутий рівень", щоб перейти до інтерфейсу AdvancedApp
         composeTestRule.onNodeWithText("Просунутий рівень").performClick()
 
-        // Переконуємось, що елементи AdvancedApp відображені
+        // Переконуємось, що елементи AdvancedApp відображаються на екрані
         composeTestRule.onNodeWithTag("SolarRadiation").assertExists()
         composeTestRule.onNodeWithTag("Temperature").assertExists()
         composeTestRule.onNodeWithTag("PanelArea").assertExists()
@@ -40,27 +40,32 @@ class AdvancedAppInstrumentedTest {
      */
     @Test
     fun testInputAndCalculateWithTags() {
+        // Перемикаємося на інтерфейс AdvancedApp
         switchToAdvancedApp()
 
-        // Вводимо значення
+        // Вводимо значення в поле сонячної радіації (SolarRadiation)
         composeTestRule.onNodeWithTag("SolarRadiation").performTextInput("1000")
+
+        // Вводимо значення температури (Temperature)
         composeTestRule.onNodeWithTag("Temperature").performTextInput("25")
+
+        // Вводимо значення площі панелі (PanelArea)
         composeTestRule.onNodeWithTag("PanelArea").performTextInput("10")
 
-        // Натискаємо кнопку
+        // Натискаємо кнопку розрахунку
         composeTestRule.onNodeWithTag("CalculateButton").performClick()
 
-        // Очікуємо появу прогрес-індикатора
+        // Очікуємо з'явлення прогрес-індикатора (CircularProgressIndicator)
         composeTestRule.waitUntil(timeoutMillis = 3000) {
             composeTestRule.onAllNodesWithTag("CircularProgressIndicator").fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Очікуємо появу результату
+        // Очікуємо з'явлення результату обчислення
         composeTestRule.waitUntil(timeoutMillis = 9000) {
             composeTestRule.onAllNodesWithTag("Result").fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Перевіряємо відображення результату
+        // Перевіряємо, що результат відображається на екрані
         composeTestRule.onNodeWithTag("Result").assertExists().assertIsDisplayed()
     }
 
@@ -69,17 +74,18 @@ class AdvancedAppInstrumentedTest {
      */
     @Test
     fun testDefaultMockValuesWithTags() {
+        // Перемикаємося на інтерфейс AdvancedApp
         switchToAdvancedApp()
 
-        // Натискаємо кнопку без введення даних
+        // Натискаємо кнопку розрахунку без введення даних (використовуються моковані значення)
         composeTestRule.onNodeWithTag("CalculateButton").performClick()
 
-        // Очікуємо появу результату
+        // Очікуємо з'явлення результату обчислення
         composeTestRule.waitUntil(timeoutMillis = 9000) {
             composeTestRule.onAllNodesWithTag("Result").fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Перевіряємо, що результат видно
+        // Перевіряємо, що результат відображається на екрані
         composeTestRule.onNodeWithTag("Result").assertExists().assertIsDisplayed()
     }
 
@@ -88,22 +94,23 @@ class AdvancedAppInstrumentedTest {
      */
     @Test
     fun testEmptyFieldsUseDefaultValues() {
+        // Перемикаємося на інтерфейс AdvancedApp
         switchToAdvancedApp()
 
-        // Натискаємо кнопку без введення даних
+        // Натискаємо кнопку розрахунку без введення даних (використовуються моковані значення)
         composeTestRule.onNodeWithTag("CalculateButton").performClick()
 
-        // Очікуємо появу прогрес-індикатора
+        // Очікуємо з'явлення прогрес-індикатора
         composeTestRule.waitUntil(timeoutMillis = 3000) {
             composeTestRule.onAllNodesWithTag("CircularProgressIndicator").fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Очікуємо появу результату
+        // Очікуємо з'явлення результату обчислення
         composeTestRule.waitUntil(timeoutMillis = 9000) {
             composeTestRule.onAllNodesWithTag("Result").fetchSemanticsNodes().isNotEmpty()
         }
 
-        // Перевіряємо, що результат видно
+        // Перевіряємо, що результат відображається на екрані
         composeTestRule.onNodeWithTag("Result").assertExists().assertIsDisplayed()
     }
 }

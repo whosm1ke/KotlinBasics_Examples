@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_15.composables
+package ua.kpi.practical_example_15.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -23,11 +23,11 @@ import ua.kpi.practical_example_15.viewModels.SolarStationViewModel
 
 @Composable
 fun AdvancedApp(viewModel: SolarStationViewModel = viewModel()) {
-    // --- Для вибору станції ---
+    // --- Змінна для зберігання вибраної станції ---
     var selectedStation by remember { mutableStateOf<SolarStation?>(null) }
 
     Column {
-        // --- Пошук ---
+        // --- Поле для пошуку за назвою станції ---
         OutlinedTextField(
             value = viewModel.searchQuery,
             onValueChange = { viewModel.updateSearchQuery(it) },
@@ -37,7 +37,7 @@ fun AdvancedApp(viewModel: SolarStationViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // --- Фільтр типу та сортування ---
+        // --- Кнопки фільтрації за типом станції ---
         Row {
             listOf("All", "Solar", "Wind", "Hydro").forEach { type ->
                 Button(
@@ -49,6 +49,7 @@ fun AdvancedApp(viewModel: SolarStationViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // --- Кнопки сортування за різними критеріями ---
         Row {
             listOf("Name", "Type", "Power", "Date").forEach { criteria ->
                 Button(
@@ -60,7 +61,7 @@ fun AdvancedApp(viewModel: SolarStationViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // --- LazyColumn з можливістю вибору станції ---
+        // --- Список станцій з можливістю вибору ---
         LazyColumn {
             items(viewModel.filteredStations) { station ->
                 Card(
@@ -80,7 +81,7 @@ fun AdvancedApp(viewModel: SolarStationViewModel = viewModel()) {
             }
         }
 
-        // --- Відображення додаткової інформації про вибрану станцію ---
+        // --- Відображення детальної інформації про вибрану станцію ---
         selectedStation?.let { station ->
             Spacer(modifier = Modifier.height(16.dp))
             Card(modifier = Modifier.fillMaxWidth()) {

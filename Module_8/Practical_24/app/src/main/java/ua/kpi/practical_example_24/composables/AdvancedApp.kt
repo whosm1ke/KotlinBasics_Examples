@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_24.composables
+package ua.kpi.practical_example_24.composables
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -38,29 +38,36 @@ import java.util.*
 
 @Composable
 fun AdvancedApp() {
+    // Отримуємо контекст застосунку для доступу до системних ресурсів
     val context = LocalContext.current
+    // Стан для кількості точок графіка
     var pointsCount by remember { mutableStateOf("10") }
+    // Стан для максимальної потужності
     var maxPower by remember { mutableStateOf("150") }
+    // Стан для мінімальної температури
     var minTemp by remember { mutableStateOf("20") }
 
     Column(modifier = Modifier.padding(16.dp)) {
+        // Відображення заголовка застосунку
         Text("Просунутий рівень: багатосторінковий PDF з секціями та графіком")
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Інтерактивні параметри
+        // Поле вводу кількості точок
         OutlinedTextField(
             value = pointsCount,
             onValueChange = { pointsCount = it },
             label = { Text("Кількість точок") }
         )
 
+        // Поле вводу максимальної потужності
         OutlinedTextField(
             value = maxPower,
             onValueChange = { maxPower = it },
             label = { Text("Макс потужність (кВт)") }
         )
 
+        // Поле вводу мінімальної температури
         OutlinedTextField(
             value = minTemp,
             onValueChange = { minTemp = it },
@@ -69,6 +76,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Кнопка для генерації PDF-звіту
         Button(onClick = {
             generateAdvancedPDF(
                 context,
@@ -89,33 +97,36 @@ fun generateAdvancedPDF(
     minTempVal: Int
 ) {
     try {
-        // 1️⃣ Створення файлу
+        // 1️⃣ Створення файлу PDF у директорії документів
         val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
         val file = File(path, "Advanced_SolarPlant_Report.pdf")
         val writer = PdfWriter(file.absolutePath)
         val pdf = PdfDocument(writer)
         val document = Document(pdf)
 
-        // 2️⃣ Шрифт (кирилиця)
+        // 2️⃣ Встановлення шрифту для підтримки кирилиці
         val font: PdfFont = PdfFontFactory.createFont(
             "/system/fonts/Roboto-Regular.ttf",
             "Identity-H"
         )
         document.setFont(font)
 
-        // --- СТОРІНКА 1: Таблиця ---
+        // --- СТОРІНКА 1: Таблиця з даними ---
         document.add(Paragraph("Звіт Сонячної електростанції (Просунутий рівень)").setBold())
         document.add(Paragraph("Основні показники за день"))
 
+        // Створюємо таблицю з трьома колонками
         val table = Table(UnitValue.createPercentArray(floatArrayOf(2f, 2f, 2f)))
             .useAllAvailableWidth()
         table.addCell("Час")
         table.addCell("Продуктивність (кВт)")
         table.addCell("Температура (°C)")
 
+        // Форматувальник дати для часу
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val chartEntries = mutableListOf<Entry>()
+        val chartEntries = mutableListOf<Entry>() // Масив точок для графіка
 
+        // Генерація випадкових даних для таблиці та графіка
         for (i in 0 until points) {
             val power = (0..maxPowerVal).random().toFloat()
             val temp = (minTempVal..(minTempVal + 15)).random().toFloat()
@@ -123,14 +134,15 @@ fun generateAdvancedPDF(
             table.addCell(power.toString())
             table.addCell(temp.toString())
 
-            chartEntries.add(Entry(i.toFloat(), power))
+            chartEntries.add(Entry(i.toFloat(), power)) // Додаємо точку для графіка
         }
         document.add(table)
 
-        // --- СТОРІНКА 2: Графік ---
-        document.add(AreaBreak())
+        // --- СТОРІНКА 2: Графік продуктивності ---
+        document.add(AreaBreak()) // Розрив сторінки
         document.add(Paragraph("Графік продуктивності (кВт)"))
 
+        // Створюємо графік за допомогою MPAndroidChart
         val chart = LineChart(context)
         val dataSet = LineDataSet(chartEntries, "Продуктивність (кВт)")
         dataSet.color = android.graphics.Color.BLUE
@@ -138,18 +150,20 @@ fun generateAdvancedPDF(
         val lineData = LineData(dataSet)
         chart.data = lineData
 
+        // Налаштовуємо розмір графіка
         chart.layout(0, 0, 800, 600)
-        val bitmap = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(800, 600, Bitmap.Config.ARGB_8888) // Створюємо бітмап
         val canvas = Canvas(bitmap)
-        chart.draw(canvas)
+        chart.draw(canvas) // Відображаємо графік на холсті
 
+        // Конвертуємо графік у PNG і додаємо до PDF
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         val imageData = ImageDataFactory.create(stream.toByteArray())
         val chartImage = Image(imageData)
         document.add(chartImage)
 
-        // --- СТОРІНКА 3: Аналітика ---
+        // --- СТОРІНКА 3: Аналітика та висновки ---
         document.add(AreaBreak())
         document.add(Paragraph("Аналітичні висновки"))
         document.add(
@@ -161,14 +175,14 @@ fun generateAdvancedPDF(
                 
                 Рекомендація: оптимізуйте навантаження у пікові години 
                 та контролюйте температуру модулів для підвищення ефективності.
-                """.trimIndent()
+                "".trimIndent()
             )
         )
 
-        // 6️⃣ Закриття документа
+        // 6️⃣ Закриття документа і збереження файлу
         document.close()
 
     } catch (e: Exception) {
-        e.printStackTrace()
+        e.printStackTrace() // Виводимо помилку у випадку невдачі
     }
 }

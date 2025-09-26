@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_8.composables
+package ua.kpi.practical_example_8.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +15,10 @@ import ua.kpi.practical_example_8.dbs.BasicAppDatabase
 
 @Composable
 fun BasicApp() {
+    // Отримуємо контекст застосунку для створення бази даних
     val context = LocalContext.current
+    
+    // Створюємо базу даних з використанням Room
     val db = remember {
         databaseBuilder(
             context,
@@ -23,17 +26,20 @@ fun BasicApp() {
             "basic_solar_station_db"
         ).build()
     }
-    // Стейт для збережених параметрів
+    
+    // Стейт для збережених параметрів енергії
     var parameters by remember { mutableStateOf(listOf<EnergyParameter>()) }
 
-    // Стейт для введеної потужності
+    // Стейт для введеного значення потужності
     var inputPower by remember { mutableStateOf("") }
 
+    // Отримуємо корутинну область для запуску асинхронних операцій
     val coroutineScope = rememberCoroutineScope()
+    
     Column(
         modifier = Modifier.padding(16.dp),
     ) {
-        // Введення потужності
+        // Поле вводу потужності з підписом
         OutlinedTextField(
             value = inputPower,
             onValueChange = { inputPower = it },
@@ -43,17 +49,17 @@ fun BasicApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Кнопка для додавання нового параметра
+        // Кнопка для додавання нового параметра до бази даних
         Button(
             onClick = {
-                val powerValue = inputPower.toDoubleOrNull()
-                if (powerValue != null) {
-                    coroutineScope.launch {
-                        // Вставка у базу даних
+                val powerValue = inputPower.toDoubleOrNull() // Перетворюємо введений текст у число
+                if (powerValue != null) { // Якщо перетворення вдалося
+                    coroutineScope.launch { // Запускаємо корутину для асинхронної операції
+                        // Вставляємо новий параметр у базу даних
                         db.energyParameterDao().insert(EnergyParameter(power = powerValue))
-                        // Оновлення списку
+                        // Оновлюємо список параметрів з бази даних
                         parameters = db.energyParameterDao().getAll()
-                        inputPower = "" // очищення поля
+                        inputPower = "" // Очищуємо поле вводу
                     }
                 }
             },
@@ -64,7 +70,7 @@ fun BasicApp() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Відображення списку збережених параметрів
+        // Відображення списку збережених параметрів у вигляді списку LazyColumn
         LazyColumn {
             items(parameters) { param ->
                 Text(text = "Потужність: ${param.power} кВт", style = MaterialTheme.typography.bodyLarge)
@@ -72,7 +78,8 @@ fun BasicApp() {
             }
         }
     }
-    // Початкове завантаження даних
+    
+    // Початкове завантаження даних з бази даних під час першого відображення компоненти
     LaunchedEffect(Unit) {
         parameters = db.energyParameterDao().getAll()
     }

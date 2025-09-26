@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_20.composables
+package ua.kpi.practical_example_20.composables
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -25,26 +25,32 @@ import kotlin.math.sqrt
 
 @Composable
 fun MediumApp(sensorManager: SensorManager, accelerometer: Sensor?) {
+    // Створюємо стан для зберігання значення нахилу пристрою
     var tilt by remember { mutableStateOf(0f) }
 
-    // Реєстрація слухача акселерометра
+    // Реєстрація слухача акселерометра для отримання даних про рух пристрою
     DisposableEffect(Unit) {
         val listener = object : SensorEventListener {
+            // Метод викликається при зміні даних з сенсора
             override fun onSensorChanged(event: SensorEvent?) {
                 event?.let {
+                    // Обчислення магнітуди нахилу за двома осями (X та Y)
                     tilt = sqrt(it.values[0]*it.values[0] + it.values[1]*it.values[1])
                 }
             }
+            // Метод викликається при зміні точності сенсора (в даному випадку не використовується)
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
         }
+        // Реєстрація слухача для акселерометра з визначеним інтервалом оновлення
         accelerometer?.also { sensorManager.registerListener(listener, it, SensorManager.SENSOR_DELAY_UI) }
+        // Деструктор для відписки від сенсора при завершенні життєвого циклу Composable
         onDispose { sensorManager.unregisterListener(listener) }
     }
 
-    // Плавна анімація з коротким tween для швидшого заповнення
+    // Анимація зміни значення нахилу для плавного відображення змін
     val animatedTilt by animateFloatAsState(
         targetValue = tilt,
-        animationSpec = tween(durationMillis = 150) // швидкість анімації 150 мс
+        animationSpec = tween(durationMillis = 150) // Час анімації 150 мілісекунд
     )
 
     Column(
@@ -54,9 +60,11 @@ fun MediumApp(sensorManager: SensorManager, accelerometer: Sensor?) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Виведення значення нахилу у вигляді тексту
         Text("Tilt magnitude: %.2f".format(animatedTilt), style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(32.dp))
         Canvas(modifier = Modifier.size(200.dp)) {
+            // Обчислення кута для відображення на графічному елементі
             val sweepAngle = (animatedTilt * 10 / 5f).coerceIn(0f, 360f)
             drawArc(
                 color = Color.Green,

@@ -11,18 +11,20 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
+// Определяем цветовую схему для темной темы
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Purple80,        // Основной цвет для темной темы
+    secondary = PurpleGrey80,  // Вторичный цвет для темной темы
+    tertiary = Pink80           // Третичный цвет для темной темы
 )
 
+// Определяем цветовую схему для светлой темы
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = Purple40,        // Основной цвет для светлой темы
+    secondary = PurpleGrey40,  // Вторичный цвет для светлой темы
+    tertiary = Pink40           // Третичный цвет для светлой темы
 
-    /* Other default colors to override
+    /* Другие стандартные цвета для переопределения
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
     onPrimary = Color.White,
@@ -35,24 +37,27 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun Practical_Example_17Theme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    darkTheme: Boolean = isSystemInDarkTheme(),  // Определяет, используется ли темная тема; по умолчанию - определяется системой
+    // Динамическая цветовая схема доступна на Android 12+
+    dynamicColor: Boolean = true,                // Флаг для использования динамической цветовой схемы
+    content: @Composable () -> Unit                   // Композиция содержимого темы
 ) {
+    // Выбираем подходящую цветовую схему в зависимости от условий
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            // Если поддерживается динамическая цветовая схема и версия Android 12+
+            val context = LocalContext.current  // Получаем текущий контекст
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)  // Возвращаем соответствующую динамическую цветовую схему
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> DarkColorScheme  // Если темная тема, используем темную цветовую схему
+        else -> LightColorScheme      // Иначе используем светлую цветовую схему
     }
 
+    // Применяем выбранную цветовую схему в MaterialTheme
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
+        colorScheme = colorScheme,   // Цветовая схема для темы
+        typography = Typography,     // Типографика для темы
+        content = content             // Содержимое, которое будет использовать эту тему
     )
 }

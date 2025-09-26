@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_14.composables
+package ua.kpi.practical_example_14.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -28,6 +28,7 @@ import ua.kpi.practical_example_14.data.SolarStation
 
 @Composable
 fun MediumApp() {
+    // Створення списку сонячних станцій з початковими даними
     val stations = remember {
         listOf(
             SolarStation("Сонячна Станція 1", "Сонячна", "Прогнозована потужність 120 кВт", 50.45, 30.52, 120.0),
@@ -36,11 +37,13 @@ fun MediumApp() {
         )
     }
 
-    // Стан для вибраної станції
+    // Стан для відстеження обраної станції (null означає, що ще не обрано)
     var selectedStation by remember { mutableStateOf<SolarStation?>(null) }
 
+    // Якщо станція не вибрана, показуємо список карток
     if (selectedStation == null) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            // Заголовок списку
             Text(
                 "Список сонячних електростанцій у картках",
                 style = MaterialTheme.typography.titleLarge,
@@ -49,14 +52,14 @@ fun MediumApp() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Список карток
+            // Використовуємо LazyColumn для відображення списку станцій
             LazyColumn {
                 items(stations) { station ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
-                            .clickable { selectedStation = station }, // перехід до детальної інформації
+                            .clickable { selectedStation = station }, // При натисканні переходить до деталей
                         elevation = CardDefaults.cardElevation(4.dp)
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -69,20 +72,23 @@ fun MediumApp() {
             }
         }
     } else {
-        // Детальна інформація про обрану станцію
+        // Якщо станція вибрана, показуємо детальну інформацію
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Заголовок детального відображення
             Text("Детальна інформація", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(16.dp))
+            // Відображення даних обраної станції
             Text("Назва: ${selectedStation!!.name}", fontWeight = FontWeight.Bold)
             Text("Тип: ${selectedStation!!.type}")
             Text("Опис: ${selectedStation!!.description}")
             Text("Прогнозована потужність: ${selectedStation!!.forecastPower} кВт")
             Spacer(modifier = Modifier.height(16.dp))
+            // Кнопка для повернення до списку
             Button(onClick = { selectedStation = null }) {
                 Text("Назад")
             }

@@ -24,25 +24,28 @@ import ua.kpi.practical_example_25.ui.theme.Practical_Example_25Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Встановлення вмісту активності за допомогою Compose
         setContent {
             Practical_Example_25Theme {
+                // Створення стану для вибору рівня складності (використовується remember для збереження стану між перерисуваннями)
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
+                // Основна поверхня для відображення UI
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        // Перемикач рівня складності
+                        // Відображення перемикача рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлення стану при зміні вибору
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp)) // Простір між елементами
 
-                        // Відображення UI відповідно до рівня
+                        // Відображення відповідного компонента в залежності від обраного рівня
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp()
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp()
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()
+                            DisplayFor.BASIC_LEVEL -> BasicApp()          // Базовий рівень
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp()        // Середній рівень
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()    // Розширений рівень
                         }
                     }
                 }
@@ -50,4 +53,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

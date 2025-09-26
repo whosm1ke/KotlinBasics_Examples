@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_5.advancedScreens
+package ua.kpi.practical_example_5.advancedScreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,24 +24,37 @@ import ua.kpi.practical_example_5.components.ScreenTitle
 
 @Composable
 fun SolarDetailsScreen(navController: NavHostController, panelsCount: Int) {
-    val totalPower = panelsCount * 0.3 // Потужність однієї панелі 0.3 кВт
+    // Обчислення загальної потужності сонячних панелей
+    // Кожна панель має потужність 0.3 кВт
+    val totalPower = panelsCount * 0.3
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize()           // Заповнює весь доступний простір
+            .padding(16.dp)          // Додає внутрішній відступ 16.dp
+            .verticalScroll(rememberScrollState()), // Дозволяє прокручувати вміст вертикально
+        verticalArrangement = Arrangement.Center,   // Вирівнювання елементів по центру вертикально
+        horizontalAlignment = Alignment.CenterHorizontally  // Вирівнювання елементів по центру горизонтально
     ) {
+        // Відображення заголовка екрану
         ScreenTitle("Деталі прогнозу")
 
+        // Відображення кількості панелей
         InfoRow(label = "Кількість панелей", value = panelsCount.toString())
-        InfoRow(label = "Очікувана потужність", value = "%.1f кВт".format(totalPower))
+        
+        // Відображення очікуваної потужності з округленням до одного знаку після коми
+        InfoRow(label = "Очікувана потужність", value = "%1.f кВт".format(totalPower))
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Простір між елементами
 
-        MenuButton("Повернутися до прогнозу") { navController.navigate("${Screen.AdvancedScreen.SolarForecast.route}/Anonymous") }
-        MenuButton("Повернутися в меню") { navController.navigate(Screen.AdvancedScreen.MainScreen.route) }
+        // Кнопка для повернення до екрану прогнозу сонячної енергії
+        MenuButton("Повернутися до прогнозу") { 
+            navController.navigate("${Screen.AdvancedScreen.SolarForecast.route}/Anonymous") 
+        }
+        
+        // Кнопка для повернення в головне меню
+        MenuButton("Повернутися в меню") { 
+            navController.navigate(Screen.AdvancedScreen.MainScreen.route) 
+        }
     }
 }

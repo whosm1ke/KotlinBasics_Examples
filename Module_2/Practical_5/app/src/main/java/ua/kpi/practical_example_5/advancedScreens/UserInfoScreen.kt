@@ -1,4 +1,5 @@
-﻿package ua.kpi.practical_example_5.advancedScreens
+package ua.kpi.practical_example_5.advancedScreens
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,38 +30,47 @@ import ua.kpi.practical_example_5.components.ScreenTitle
 
 @Composable
 fun UserInfoScreen(navController: NavHostController) {
+    // Створюємо змінні для зберігання введених даних користувача
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center
+            .fillMaxSize()           // Заповнює весь доступний простір
+            .padding(16.dp)          // Додає внутрішній відступ 16 dp
+            .verticalScroll(rememberScrollState()), // Дозволяє прокручувати вміст вертикально
+        verticalArrangement = Arrangement.Center // Вирівнювання елементів по центру вертикально
     ) {
+        // Відображаємо заголовок екрану
         ScreenTitle("Інформація про користувача")
 
+        // Поле для вводу імені користувача
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Ім'я") },
-            modifier = Modifier.fillMaxWidth()
+            value = name,                           // Поточне значення поля
+            onValueChange = { name = it },          // Оновлення значення при зміні
+            label = { Text("Ім'я") },              // Мітка до поля
+            modifier = Modifier.fillMaxWidth()      // Заповнює всю доступну ширину
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp)) // Простір між елементами
 
+        // Поле для вводу email користувача
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
+            value = email,                          // Поточне значення поля
+            onValueChange = { email = it },         // Оновлення значення при зміні
+            label = { Text("Email") },             // Мітка до поля
+            modifier = Modifier.fillMaxWidth()      // Заповнює всю доступну ширину
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Простір між елементами
 
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            MenuButton("Повернутися в меню") { navController.navigate(Screen.AdvancedScreen.MainScreen.route) }
+        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) { // Рядок з кнопками
+            // Кнопка для повернення до головного меню
+            MenuButton("Повернутися в меню") { 
+                navController.navigate(Screen.AdvancedScreen.MainScreen.route) 
+            }
+            
+            // Кнопка для переходу до екрану прогнозу, передаючи ім'я користувача
             MenuButton("Перейти до прогнозу") {
                 navController.navigate("${Screen.AdvancedScreen.UserInfo.route}/${name.ifEmpty { "Anonymous" }}")
             }

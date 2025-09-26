@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_16.composables
+package ua.kpi.practical_example_16.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,7 +40,7 @@ import ua.kpi.practical_example_16.data.EnergyStation
 
 @Composable
 fun AdvancedApp() {
-    // Моковані дані станцій
+    // Моковані дані станцій - ініціалізація списку станцій з початковими значеннями
     val stations = remember {
         mutableStateListOf(
             EnergyStation("СЕС 1", 50.4501, 30.5234, "Сонячна", "Потужність 100 кВт", 100, "Активна"),
@@ -50,14 +50,14 @@ fun AdvancedApp() {
         )
     }
 
-    // Фільтри та сортування
+    // Фільтри та сортування - зберігаємо стан вибору типу та порядку сортування
     var selectedType by remember { mutableStateOf("Всі") }
     var sortByPowerAsc by remember { mutableStateOf(true) }
 
-    // Стейт для виділеної станції
+    // Стейт для виділеної станції - зберігає вибрану станцію для підсвічування та показу на карті
     var selectedStation by remember { mutableStateOf<EnergyStation?>(null) }
 
-    // Відфільтрований та відсортований список
+    // Відфільтрований та відсортований список - обчислення залежить від станів фільтрів і сортування
     val filteredStations by remember(stations, selectedType, sortByPowerAsc) {
         derivedStateOf {
             stations.filter { selectedType == "Всі" || it.type == selectedType }
@@ -65,33 +65,34 @@ fun AdvancedApp() {
         }
     }
 
+    // Стан позиції камери карти - встановлює початкову позицію на Київ
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(50.4501, 30.5234), 12f)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // Панель фільтрів і сортування
+        // Панель фільтрів і сортування - розміщує елементи на верхній частині екрану
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Тип станції
+            // Тип станції - виклик функції для відображення dropdown меню фільтра типу
             FilterDropdown(
                 label = "Тип",
                 options = listOf("Всі", "Сонячна", "Вітрова"),
                 selectedOption = selectedType,
                 onOptionSelected = { selectedType = it }
             )
-            // Сортування за потужністю
+            // Сортування за потужністю - кнопка для перемикання порядку сортування
             Button(onClick = { sortByPowerAsc = !sortByPowerAsc }) {
                 Text(if (sortByPowerAsc) "Сортувати ↓" else "Сортувати ↑")
             }
         }
 
         Row(modifier = Modifier.fillMaxSize()) {
-            // Список станцій зліва
+            // Список станцій зліва - використовується LazyColumn для ефективного відображення списку
             LazyColumn(
                 modifier = Modifier
                     .weight(0.35f)
@@ -99,12 +100,14 @@ fun AdvancedApp() {
                     .background(Color(0xFFEFEFEF))
             ) {
                 items(filteredStations) { station ->
+                    // Перевірка, чи є станція вибраною для підсвічування
                     val isSelected = station == selectedStation
                     Card(
                         modifier = Modifier
                             .padding(6.dp)
                             .fillMaxWidth()
                             .clickable {
+                                // При кліку на станцію, встановлюємо її як обрану і переміщуємо карту
                                 selectedStation = station
                                 cameraPositionState.position = CameraPosition.fromLatLngZoom(
                                     LatLng(station.latitude, station.longitude), 14f
@@ -115,21 +118,26 @@ fun AdvancedApp() {
                         )
                     ) {
                         Column(modifier = Modifier.padding(8.dp)) {
+                            // Відображення імені станції
                             Text(station.name, style = MaterialTheme.typography.titleMedium)
+                            // Відображення типу та статусу
                             Text("${station.type} • ${station.status}", style = MaterialTheme.typography.bodyMedium)
+                            // Відображення потужності
                             Text("Потужність: ${station.power} кВт", style = MaterialTheme.typography.bodySmall)
+                            // Відображення опису
                             Text(station.description, style = MaterialTheme.typography.bodySmall)
                         }
                     }
                 }
             }
 
-            // Карта справа
+            // Карта справа - відображає маркери станцій на карті
             GoogleMap(
                 modifier = Modifier.weight(0.65f),
                 cameraPositionState = cameraPositionState,
                 uiSettings = MapUiSettings(zoomControlsEnabled = true)
             ) {
+                // Для кожної станції відображаємо маркер на карті
                 filteredStations.forEach { station ->
                     val markerState = rememberMarkerState(LatLng(station.latitude, station.longitude))
                     Marker(
@@ -137,6 +145,7 @@ fun AdvancedApp() {
                         title = station.name,
                         snippet = "${station.type} • ${station.status}\nПотужність: ${station.power} кВт",
                         onClick = {
+                            // При кліку на маркер встановлюємо станцію як обрану
                             selectedStation = station
                             false // false = показати InfoWindow
                         }
@@ -148,7 +157,7 @@ fun AdvancedApp() {
 }
 
 /**
- * Компонент Dropdown для фільтру
+ * Компонент Dropdown для фільтру - реалізує випадаюче меню з опціями фільтрації
  */
 @Composable
 fun FilterDropdown(
@@ -175,4 +184,3 @@ fun FilterDropdown(
         }
     }
 }
-

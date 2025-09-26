@@ -24,25 +24,31 @@ import ua.kpi.practical_example_4.ui.theme.Practical_Example_4Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Вмикаємо edge-to-edge режим для Activity
+        enableEdgeToEdge()
+        
+        // Налаштовуємо вміст активності за допомогою Compose
         setContent {
             Practical_Example_4Theme {
+                // Створюємо стан для вибору режиму відображення (рівень складності)
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Наш перемикач
+                        // Відображаємо перемикач для вибору рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлюємо стан при зміні вибору
                         )
 
+                        // Додаємо простір між компонентами
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Відображення відповідного екрану
+                        // Відображаємо відповідний екран в залежності від обраного рівня складності
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicLoginScreen()
-                            DisplayFor.MIDDLE_LEVEL -> MediumLoginScreen()
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedLoginScreen()
+                            DisplayFor.BASIC_LEVEL -> BasicLoginScreen()     // Базовий екран входу
+                            DisplayFor.MIDDLE_LEVEL -> MediumLoginScreen()   // Середній екран входу
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedLoginScreen() // Просунутий екран входу
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_21.composables
+package ua.kpi.practical_example_21.composables
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -29,44 +29,51 @@ import androidx.compose.ui.unit.dp
 fun BasicApp() {
     // Стан поточної потужності сонячної електростанції
     var power by remember { mutableStateOf(50f) } // Від 0 до 100
-    val animatedPower by animateFloatAsState(targetValue = power) // Плавна анімація
+    
+    // Анімація зміни значення потужності для плавного переходу
+    val animatedPower by animateFloatAsState(targetValue = power)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Відображення назви додатку або сектора
         Text(
             text = "Сонячна електростанція: потужність",
             style = MaterialTheme.typography.titleMedium
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Пропуск між елементами
 
-        // Прогрес-бар, що анімовано змінює ширину
+        // Контейнер для прогрес-бара з визначенням максимальних розмірів
         BoxWithConstraints(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(30.dp)
-                .background(Color.LightGray, RoundedCornerShape(8.dp))
+                .fillMaxWidth() // Займає всю ширину
+                .height(30.dp) // Висота 30 dp
+                .background(Color.LightGray, RoundedCornerShape(8.dp)) // Сірий фон з закругленими кутами
         ) {
-            val maxWidthPx = maxWidth // ширина контейнера
+            val maxWidthPx = maxWidth // Отримання максимальної ширини контейнера
+            
+            // Прогрес-бар, що показує поточну потужність
             Box(
                 modifier = Modifier
-                    .width(maxWidthPx * (animatedPower / 100)) // ширина пропорційна потужності
-                    .fillMaxHeight()
-                    .background(Color.Yellow, RoundedCornerShape(8.dp))
+                    .width(maxWidthPx * (animatedPower / 100)) // Ширина пропорційна значенню потужності
+                    .fillMaxHeight() // Займає всю висоту контейнера
+                    .background(Color.Yellow, RoundedCornerShape(8.dp)) // Жовтий колір з закругленими кутами
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Пропуск між елементами
 
-        // Слайдер для зміни значення потужності
+        // Слайдер для встановлення нового значення потужності
         Slider(
-            value = power,
-            onValueChange = { power = it },
-            valueRange = 0f..100f,
+            value = power, // Поточне значення
+            onValueChange = { power = it }, // Функція, що викликається при зміні значення
+            valueRange = 0f..100f, // Діапазон від 0 до 100
             colors = SliderDefaults.colors(
-                thumbColor = Color.Yellow,
-                activeTrackColor = Color.Yellow
+                thumbColor = Color.Yellow, // Колір повзунка
+                activeTrackColor = Color.Yellow // Колір активної частини слайдера
             )
         )
+        
+        // Відображення поточного значення потужності у кВт
         Text(text = "${power.toInt()} кВт")
     }
 }

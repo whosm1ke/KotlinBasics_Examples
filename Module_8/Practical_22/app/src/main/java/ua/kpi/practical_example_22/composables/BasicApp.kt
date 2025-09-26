@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_22.composables
+package ua.kpi.practical_example_22.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,23 +15,25 @@ import java.io.FileWriter
 
 @Composable
 fun BasicApp() {
-    // Стан для введення користувачем
+    // Створення станів для зберігання даних, введених користувачем
     var date by remember { mutableStateOf("") }
     var power by remember { mutableStateOf("") }
 
-    // Список зчитаних даних
+    // Стан для зберігання списку записів енергоспоживання
     var records by remember { mutableStateOf(listOf<EnergyRecord>()) }
 
-    // Посилання на файл у внутрішньому сховищі
+    // Отримання контексту додатку для доступу до внутрішнього сховища
     val context = androidx.compose.ui.platform.LocalContext.current
+    // Створення шляху до файлу у внутрішньому сховищі додатку
     val file = File(context.filesDir, "energy_data.csv")
 
     Column(modifier = Modifier.padding(16.dp)) {
+        // Відображення заголовка
         Text("Введіть дані про енергоспоживання", style = MaterialTheme.typography.titleMedium)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Поле для дати
+        // Поле для введення дати
         OutlinedTextField(
             value = date,
             onValueChange = { date = it },
@@ -41,7 +43,7 @@ fun BasicApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Поле для потужності
+        // Поле для введення потужності
         OutlinedTextField(
             value = power,
             onValueChange = { power = it },
@@ -51,18 +53,18 @@ fun BasicApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Кнопка для збереження у файл
+        // Кнопка для збереження введених даних у CSV-файл
         Button(
             onClick = {
                 try {
-                    val writer = FileWriter(file, true) // true = дозапис у файл
-                    writer.append("$date,$power\n") // CSV-рядок
-                    writer.flush()
-                    writer.close()
-                    date = ""
-                    power = ""
+                    val writer = FileWriter(file, true) // Відкриття файлу у режимі дозапису
+                    writer.append("$date,$power\n") // Додавання нового запису у форматі CSV
+                    writer.flush() // Запис у файл
+                    writer.close() // Закриття файлу
+                    date = "" // Очищення поля дати
+                    power = "" // Очищення поля потужності
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    e.printStackTrace() // Виведення помилки у випадку неудачі
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -72,26 +74,26 @@ fun BasicApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Кнопка для читання з файлу
+        // Кнопка для завантаження даних з CSV-файлу
         Button(
             onClick = {
-                val loaded = mutableListOf<EnergyRecord>()
-                if (file.exists()) {
+                val loaded = mutableListOf<EnergyRecord>() // Створення списку для зчитаних записів
+                if (file.exists()) { // Перевірка, чи існує файл
                     try {
-                        val reader = BufferedReader(FileReader(file))
+                        val reader = BufferedReader(FileReader(file)) // Відкриття читача файлу
                         var line: String?
-                        while (reader.readLine().also { line = it } != null) {
-                            val parts = line!!.split(",")
-                            if (parts.size == 2) {
+                        while (reader.readLine().also { line = it } != null) { // Читання рядків поки не закінчиться
+                            val parts = line!!.split(",") // Розділення рядка за комою
+                            if (parts.size == 2) { // Перевірка, що маємо 2 частини
                                 val d = parts[0]
-                                val p = parts[1].toDoubleOrNull() ?: 0.0
-                                loaded.add(EnergyRecord(d, p))
+                                val p = parts[1].toDoubleOrNull() ?: 0.0 // Конвертація у double або 0.0 за замовчуванням
+                                loaded.add(EnergyRecord(d, p)) // Додавання запису до списку
                             }
                         }
-                        reader.close()
-                        records = loaded
+                        reader.close() // Закриття читача файлу
+                        records = loaded // Оновлення стану зчитаними даними
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        e.printStackTrace() // Виведення помилки у випадку неудачі
                     }
                 }
             },
@@ -106,26 +108,27 @@ fun BasicApp() {
         Button(
             onClick = {
                 if (file.exists()) {
-                    file.delete() // видаляємо файл
-                    records = emptyList() // очищаємо список у пам’яті
+                    file.delete() // Видалення файлу зі сховища
+                    records = emptyList() // Очищення списку у пам’яті
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error) // Зміна кольору кнопки на помилковий
         ) {
             Text("Видалити файл CSV")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Вивід списку записів
+        // Відображення заголовка для списку записів
         Text("Дані з файлу:", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Відображення списку записів за допомогою LazyColumn
         LazyColumn {
             items(records) { record ->
                 Text("Дата: ${record.date}, Потужність: ${record.power} кВт")
-                Divider()
+                Divider() // Роздільник між записами
             }
         }
     }

@@ -29,25 +29,27 @@ import ua.kpi.practical_example_12.ui.theme.Practical_Example_12Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Встановлюємо контент для активності з використанням Compose
         setContent {
             Practical_Example_12Theme {
+                // Створюємо стан для вибору режиму відображення
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Наш перемикач
+                        // Відображаємо перемикач режимів відображення
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлюємо стан при зміні вибору
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp)) // Відступ між елементами
 
-                        // Відображення відповідного екрану
+                        // Відображаємо відповідний компонент залежно від обраного режиму
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp() // - для базового
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp() // - для середнього
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp() // - для просунутого
+                            DisplayFor.BASIC_LEVEL -> BasicApp() // Відображаємо базовий екран
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp() // Відображаємо середній екран
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp() // Відображаємо просунутий екран
                         }
                     }
                 }
@@ -55,4 +57,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

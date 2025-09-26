@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_4.composables
+package ua.kpi.practical_example_4.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
@@ -15,9 +15,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 @Composable
 fun MediumLoginScreen() {
-    // State для перемикання між режимом авторизації та реєстрації
+    // Стан для перемикання між режимом авторизації та реєстрації
     var isRegisterMode by remember { mutableStateOf(false) }
 
     // Колонка для вертикального розташування всіх елементів

@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_25
+package ua.kpi.practical_example_25
 
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -27,13 +27,18 @@ class MediumAppInstrumentedTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     /**
-     * Переключення на MediumApp через DisplayModeSelector
+     * Функція для переключення на MediumApp через DisplayModeSelector
+     * Вона перевіряє наявність елемента вибору режиму та натискає на "Середній рівень"
+     * Потім перевіряє, чи відображаються всі необхідні поля та кнопка
      */
     private fun switchToMediumApp() {
+        // Перевіряємо, що елемент DisplayModeSelector існує на екрані
         composeTestRule.onNodeWithTag("DisplayModeSelector").assertExists()
+        
+        // Натискаємо на текст "Середній рівень" для переходу до середнього режиму
         composeTestRule.onNodeWithText("Середній рівень").performClick()
 
-        // Переконуємось, що поля та кнопка відображені
+        // Перевіряємо, що всі елементи інтерфейсу для середнього рівня відображаються
         composeTestRule.onNodeWithTag("MediumSolarRadiation").assertExists()
         composeTestRule.onNodeWithTag("MediumTemperature").assertExists()
         composeTestRule.onNodeWithTag("MediumPanelArea").assertExists()
@@ -42,32 +47,39 @@ class MediumAppInstrumentedTest {
 
     @Test
     fun testInputAndCalculate() {
+        // Викликаємо функцію для переходу до середнього режиму
         switchToMediumApp()
 
-        // Вводимо дані
+        // Вводимо значення у поле сонячної радіації
         composeTestRule.onNodeWithTag("MediumSolarRadiation").performTextInput("1000")
+        
+        // Вводимо значення температури
         composeTestRule.onNodeWithTag("MediumTemperature").performTextInput("25")
+        
+        // Вводимо значення площі панелі
         composeTestRule.onNodeWithTag("MediumPanelArea").performTextInput("10")
 
-        // Натискаємо кнопку
+        // Натискаємо кнопку обчислення
         composeTestRule.onNodeWithTag("MediumCalculateButton").performClick()
 
-        // Очікуємо результат
+        // Очікуємо, поки результат з'явиться на екрані (до 9 секунд)
         composeTestRule.waitUntil(timeoutMillis = 9000) {
             composeTestRule.onAllNodesWithTag("MediumResult").fetchSemanticsNodes().isNotEmpty()
         }
 
+        // Перевіряємо, що результат відображається
         composeTestRule.onNodeWithTag("MediumResult").assertExists().assertIsDisplayed()
     }
 
     @Test
     fun testEmptyFieldsDoesNothing() {
+        // Викликаємо функцію для переходу до середнього режиму
         switchToMediumApp()
 
-        // Натискаємо кнопку без введення даних
+        // Натискаємо кнопку обчислення без введення даних
         composeTestRule.onNodeWithTag("MediumCalculateButton").performClick()
 
-        // Результату не має з'являтися
+        // Перевіряємо, що результат не з'явився (кількість результатів дорівнює 0)
         composeTestRule.onAllNodesWithTag("MediumResult").assertCountEquals(0)
     }
 }

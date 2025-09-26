@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_1.composables
+package ua.kpi.practical_example_1.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,18 +23,18 @@ import kotlin.random.Random
 
 @Composable
 fun SolarForecastAppLevel2() {
-    // Використовуємо State для збереження значення потужності
+    // Оголошуємо змінну стану для зберігання прогнозу потужності
     var powerForecast by remember { mutableStateOf(0) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFFFDE7)) // жовтуватий фон (сонячна асоціація)
+            .background(Color(0xFFFFFDE7)) // Встановлюємо жовтуватий фон для імітації сонячного світла
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Заголовок
+        // Відображаємо заголовок додатку
         Text(
             text = "Сонячна електростанція",
             fontSize = 24.sp,
@@ -43,7 +43,7 @@ fun SolarForecastAppLevel2() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Відображення потужності у Ватах
+        // Відображаємо поточний прогноз потужності у ватах
         Text(
             text = "Прогноз потужності: $powerForecast Вт",
             fontSize = 20.sp,
@@ -52,9 +52,9 @@ fun SolarForecastAppLevel2() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Кнопка оновлення
+        // Кнопка для оновлення прогнозу
         Button(onClick = {
-            // Симуляція нового прогнозу: випадкове число 100–5000 Вт
+            // Генеруємо нове випадкове значення потужності у діапазоні 100–5000 Вт
             powerForecast = Random.nextInt(100, 5000)
         }) {
             Text("Оновити прогноз")

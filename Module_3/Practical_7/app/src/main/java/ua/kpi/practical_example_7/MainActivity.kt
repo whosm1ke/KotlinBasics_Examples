@@ -24,24 +24,27 @@ import ua.kpi.practical_example_7.ui.theme.Practical_Example_7Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Вмикаємо edge-to-edge режим для Activity
+        enableEdgeToEdge()
         setContent {
             Practical_Example_7Theme {
+                // Створюємо змінну для відстеження поточного режиму відображення
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Наш перемикач
+                        // Відображаємо перемикач для вибору рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлюємо значення при зміні вибору
                         )
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(4.dp)) // Додаємо простір між елементами
 
-                        // Відображення відповідного екрану
+                        // Відображаємо відповідний компонент залежно від обраного рівня
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp()
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp()
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()
+                            DisplayFor.BASIC_LEVEL -> BasicApp() // Якщо базовий рівень — показуємо BasicApp
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp() // Якщо середній рівень — показуємо MediumApp
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp() // Якщо просунутий рівень — показуємо AdvancedApp
                         }
                     }
                 }
@@ -49,4 +52,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

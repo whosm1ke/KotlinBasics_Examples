@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_22.composables
+package ua.kpi.practical_example_22.composables
 
 import android.graphics.Color
 import android.view.ViewGroup
@@ -22,28 +22,31 @@ import java.util.*
 
 @Composable
 fun AdvancedApp() {
+    // Отримуємо контекст застосунку для доступу до файлової системи
     val context = LocalContext.current
+    // Створюємо шлях до CSV-файлу з даними енергоспоживання
     val file = File(context.filesDir, "energy_data.csv")
 
-    // Джерело даних
+    // Стан для зберігання записів енергоспоживання
     var records by remember { mutableStateOf(listOf<EnergyRecord>()) }
 
-    // Фільтри та сортування
+    // Змінні для фільтрів: дати початку та кінця, а також сортування
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
     var sortBy by remember { mutableStateOf("date") }
 
-    // Відфільтровані та відсортовані записи (автоматично оновлюються)
+    // Відфільтровані та відсортовані записи, які автоматично оновлюються при зміні даних або фільтрів
     val filteredRecords by remember(records, startDate, endDate, sortBy) {
         derivedStateOf { applyFilters(records, startDate, endDate, sortBy) }
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
+        // Заголовок додатку
         Text("Аналітика енергоспоживання (графік)", style = MaterialTheme.typography.titleMedium)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Фільтри по даті
+        // Поле вводу для дати початку фільтрації
         OutlinedTextField(
             value = startDate,
             onValueChange = { startDate = it },
@@ -53,6 +56,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Поле вводу для дати кінця фільтрації
         OutlinedTextField(
             value = endDate,
             onValueChange = { endDate = it },
@@ -62,9 +66,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Кнопка завантаження CSV
+        // Кнопка завантаження даних із CSV файлу
         Button(
             onClick = {
                 val loaded = mutableListOf<EnergyRecord>()
@@ -94,7 +96,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Кнопка видалення CSV
+        // Кнопка видалення CSV-файлу
         Button(
             onClick = {
                 if (file.exists()) {
@@ -110,7 +112,7 @@ fun AdvancedApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Графік MPAndroidChart
+        // Відображення графіка MPAndroidChart
         AndroidView(
             factory = { ctx ->
                 LineChart(ctx).apply {
@@ -126,10 +128,12 @@ fun AdvancedApp() {
             },
             update = { chart ->
                 if (filteredRecords.isNotEmpty()) {
+                    // Створюємо точки для графіка на основі відфільтрованих записів
                     val entries = filteredRecords.mapIndexed { index, record ->
                         Entry(index.toFloat(), record.power.toFloat())
                     }
 
+                    // Налаштовуємо стиль лінії та точок графіка
                     val dataSet = LineDataSet(entries, "Потужність (кВт)").apply {
                         color = Color.BLUE
                         setCircleColor(Color.RED)
@@ -138,13 +142,17 @@ fun AdvancedApp() {
                         valueTextSize = 12f
                     }
 
+                    // Встановлюємо дані на графік
                     chart.data = LineData(dataSet)
 
+                    // Налаштовуємо мітки по осі X
                     val labels = filteredRecords.map { it.date }
                     chart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
 
+                    // Оновлюємо графік
                     chart.invalidate()
                 } else {
+                    // Якщо немає даних, очищуємо графік
                     chart.clear()
                     chart.invalidate()
                 }
@@ -156,7 +164,7 @@ fun AdvancedApp() {
     }
 }
 
-// Функція для фільтрації та сортування
+// Функція для застосування фільтрів та сортування
 fun applyFilters(
     records: List<EnergyRecord>,
     startDate: String,
@@ -164,20 +172,22 @@ fun applyFilters(
     sortBy: String
 ): List<EnergyRecord> {
     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    // Фільтруємо записи за датами
     val filtered = records.filter { rec ->
         val d = try { sdf.parse(rec.date) } catch (_: Exception) { null }
         val start = if (startDate.isNotBlank()) try { sdf.parse(startDate) } catch (_: Exception) { null } else null
         val end = if (endDate.isNotBlank()) try { sdf.parse(endDate) } catch (_: Exception) { null } else null
 
         if (d != null) {
-            val afterStart = start?.let { !d.before(it) } ?: true
-            val beforeEnd = end?.let { !d.after(it) } ?: true
+            val afterStart = start?.let { !d.before(it) } ?: true  // Перевіряємо, чи дата не раніше початкової
+            val beforeEnd = end?.let { !d.after(it) } ?: true       // Перевіряємо, чи дата не пізніше кінцевої
             afterStart && beforeEnd
         } else false
     }
 
+    // Сортуємо відфільтровані записи
     return when (sortBy) {
-        "power" -> filtered.sortedBy { it.power }
-        else -> filtered.sortedBy { it.date }
+        "power" -> filtered.sortedBy { it.power }  // За потужністю
+        else -> filtered.sortedBy { it.date }       // За датою
     }
 }

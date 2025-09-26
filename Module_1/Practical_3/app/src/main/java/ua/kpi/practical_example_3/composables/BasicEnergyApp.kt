@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_3.composables
+package ua.kpi.practical_example_3.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -14,52 +14,52 @@ import ua.kpi.practical_example_3.R
 
 @Composable
 fun BasicEnergyApp() {
-    // Стан тексту, який змінюється при натисканні кнопки
+    // Створюємо змінний стан для тексту, який буде змінюватися при натисканні кнопки
     var powerText by remember { mutableStateOf("Поточна потужність: 0 кВт") }
 
-    // Основний контейнер Column
+    // Основний контейнер Column для розміщення елементів
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .fillMaxSize()           // Заповнює весь доступний простір
+            .padding(16.dp),         // Додає внутрішній відступ 16 dp
+        horizontalAlignment = Alignment.CenterHorizontally,  // Вирівнювання по горизонталі по центру
+        verticalArrangement = Arrangement.Center  // Вирівнювання по вертикалі по центру
     ) {
-        // Заголовок
+        // Відображення заголовка додатку
         Text(
             text = "Сонячна електростанція",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            fontSize = 24.sp,              // Розмір шрифту 24 sp
+            fontWeight = FontWeight.Bold   // Жирний стиль шрифту
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))  // Простір між елементами (16 dp)
 
-        // Зображення сонячної панелі (розміщено у ресурсах drawable)
+        // Відображення зображення сонячної панелі з ресурсів drawable
         Image(
-            painter = painterResource(id = R.drawable.solar_panel),
-            contentDescription = "Сонячна панель",
+            painter = painterResource(id = R.drawable.solar_panel),  // Використовуємо зображення з ресурсів
+            contentDescription = "Сонячна панель",  // Опис для доступності
             modifier = Modifier
-                .height(200.dp)
-                .fillMaxWidth()
+                .height(200.dp)         // Встановлюємо висоту зображення
+                .fillMaxWidth()         // Заповнює ширину контейнера
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))  // Простір між елементами
 
-        // Динамічний текст
+        // Відображення динамічного тексту, що змінюється при натисканні кнопки
         Text(
             text = powerText,
-            fontSize = 18.sp
+            fontSize = 18.sp   // Розмір шрифту 18 sp
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))  // Простір між елементами
 
-        // Кнопка для зміни тексту
+        // Кнопка для оновлення тексту
         Button(
-            onClick = {
-                powerText = "Прогнозована потужність: 50 кВт"
+            onClick = {  // Подія натискання кнопки
+                powerText = "Прогнозована потужність: 50 кВт"  // Змінюємо значення тексту
             }
         ) {
-            Text(text = "Оновити прогноз")
+            Text(text = "Оновити прогноз")  // Текст на кнопці
         }
     }
 }

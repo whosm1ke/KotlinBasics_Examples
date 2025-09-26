@@ -11,12 +11,15 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
+// Опис темної кольорової схеми з використанням Purple80, PurpleGrey80 та Pink80
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
 
+// Опис світлої кольорової схеми з використанням Purple40, PurpleGrey40 та Pink40
+// Коментарі з іншими стандартними кольорами для перевизначення (закоментовано)
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
@@ -35,21 +38,25 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun Practical_Example_20Theme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    darkTheme: Boolean = isSystemInDarkTheme(), // Визначає, чи використовується темна тема (за замовчуванням - системна)
+    // Якщо true, то використовується динамічна кольорова схема для Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit // Композиція контенту, який буде оточений темою
 ) {
+    // Визначення кольорової схеми в залежності від налаштувань користувача та версії Android
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            // Отримання контексту активності для динамічної кольорової схеми
             val context = LocalContext.current
+            // Вибір темної або світлої динамічної кольорової схеми залежно від налаштувань темної теми
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> DarkColorScheme // Якщо темна тема - використовуємо темну схему
+        else -> LightColorScheme // В іншому випадку - світлу
     }
 
+    // Застосування кольорової схеми, типографії та контенту до MaterialTheme
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

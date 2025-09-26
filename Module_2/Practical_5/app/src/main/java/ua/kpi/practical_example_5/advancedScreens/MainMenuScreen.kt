@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_5.advancedScreens
+package ua.kpi.practical_example_5.advancedScreens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,9 @@ import ua.kpi.practical_example_5.components.ScreenTitle
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun MainMenuScreen(navController: NavHostController) {
+    // Використовуємо BoxWithConstraints для отримання розмірів екрану
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        // Визначаємо, чи є екран великим (більше 600 dp)
         val isLargeScreen = maxWidth > 600.dp
 
         Column(
@@ -30,17 +32,22 @@ fun MainMenuScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Відображаємо заголовок екрану
             ScreenTitle("Головне меню")
 
             if (isLargeScreen) {
-                // На великих екранах кнопки в Row
+                // На великих екранах розміщуємо кнопки горизонтально в Row
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    // Кнопка переходу до інформації про користувача
                     MenuButton("Інформація про користувача") { navController.navigate(Screen.AdvancedScreen.UserInfo.route) }
+                    // Кнопка переходу до прогнозу потужності СЕС з параметром Anonymous
                     MenuButton("Прогноз потужності СЕС") { navController.navigate("${Screen.AdvancedScreen.SolarForecast.route}/Anonymous") }
                 }
             } else {
-                // На малих екранах вертикально
+                // На малих екранах розміщуємо кнопки вертикально
+                // Кнопка переходу до інформації про користувача
                 MenuButton("Інформація про користувача") { navController.navigate(Screen.AdvancedScreen.UserInfo.route) }
+                // Кнопка переходу до прогнозу потужності СЕС з параметром Anonymous
                 MenuButton("Прогноз потужності СЕС") { navController.navigate("${Screen.AdvancedScreen.SolarForecast.route}/Anonymous") }
             }
         }

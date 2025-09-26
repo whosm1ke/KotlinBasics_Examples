@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_4.composables
+package ua.kpi.practical_example_4.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,66 +16,72 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun BasicLoginScreen() {
+    // Створюємо вертикальний контейнер для розміщення елементів
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .fillMaxSize()  // Заповнює весь доступний простір
+            .padding(16.dp), // Додає внутрішній відступ
+        horizontalAlignment = Alignment.CenterHorizontally, // Вирівнювання по горизонталі по центру
+        verticalArrangement = Arrangement.Center // Вирівнювання по вертикалі по центру
     ) {
+        // Відображаємо заголовок сторінки авторизації
         Text(
             text = "Авторизація для Сонячної електростанції",
             fontSize = 24.sp,
-            modifier = Modifier.padding(bottom = 32.dp)
+            modifier = Modifier.padding(bottom = 32.dp) // Відступ знизу
         )
 
-        var login by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-        var message by remember { mutableStateOf("") }
+        // Створюємо змінні для зберігання значень полів вводу та повідомлення
+        var login by remember { mutableStateOf("") }         // Логін користувача
+        var password by remember { mutableStateOf("") }      // Пароль користувача
+        var message by remember { mutableStateOf("") }       // Повідомлення про результат авторизації
 
+        // Поле вводу для логіна
         OutlinedTextField(
-            value = login,
-            onValueChange = { login = it },
-            label = { Text("Логін") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            value = login,  // Значення поля вводу
+            onValueChange = { login = it }, // Оновлення значення при зміні
+            label = { Text("Логін") },      // Мітка поля
+            singleLine = true,              // Дозволяє вводити лише один рядок
+            modifier = Modifier.fillMaxWidth() // Заповнює весь доступний простір по ширині
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Простір між полями
 
+        // Поле вводу для пароля з прихованим відображенням символів
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Пароль") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            value = password,  // Значення поля вводу
+            onValueChange = { password = it }, // Оновлення значення при зміні
+            label = { Text("Пароль") },       // Мітка поля
+            visualTransformation = PasswordVisualTransformation(), // Приховує символи пароля
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password), // Встановлює тип клавіатури для пароля
+            singleLine = true,               // Дозволяє вводити лише один рядок
+            modifier = Modifier.fillMaxWidth() // Заповнює весь доступний простір по ширині
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp)) // Простір між полями та кнопкою
 
+        // Кнопка "Увійти" з функцією обробки натискання
         Button(
             onClick = {
+                // Перевіряємо, чи заповнені обидва поля
                 message = if (login.isBlank() || password.isBlank()) {
-                    "Будь ласка, заповніть усі поля"
+                    "Будь ласка, заповніть усі поля"  // Повідомлення про незаповнені поля
                 } else {
-                    "Авторизація успішна!"
+                    "Авторизація успішна!" // Повідомлення про успішну авторизацію
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth() // Заповнює весь доступний простір по ширині
         ) {
-            Text("Увійти")
+            Text("Увійти") // Текст на кнопці
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp)) // Простір після кнопки
 
+        // Відображаємо повідомлення з результатом авторизації
         Text(
-            text = message,
-            color = if (message.contains("успішна")) MaterialTheme.colorScheme.primary
-            else MaterialTheme.colorScheme.error
+            text = message,  // Текст повідомлення
+            color = if (message.contains("успішна")) MaterialTheme.colorScheme.primary  // Колір тексту залежно від результату
+            else MaterialTheme.colorScheme.error // Кольори для помилки
         )
     }
 }
-
-

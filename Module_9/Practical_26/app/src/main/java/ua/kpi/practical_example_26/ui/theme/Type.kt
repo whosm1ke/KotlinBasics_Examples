@@ -6,16 +6,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
+// Оголошення об'єкта Typography з використанням Material Design типографіки
+// Цей об'єкт містить набір стилів тексту, які можна використовувати у Compose UI
 val Typography = Typography(
+    // Визначення стилю для великого тексту (наприклад, основного контенту)
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        fontFamily = FontFamily.Default,  // Використання стандартної родини шрифтів
+        fontWeight = FontWeight.Normal,   // Нормальна товщина шрифту
+        fontSize = 16.sp,                 // Розмір шрифту 16 пікселів
+        lineHeight = 24.sp,               // Висота рядка 24 пікселів для кращого читання
+        letterSpacing = 0.5.sp            // Пропуск між буквами 0.5 пікселів
     )
-    /* Other default text styles to override
+    /*
+    // Приклади інших стилів, які можна додати для розширення типографіки
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,

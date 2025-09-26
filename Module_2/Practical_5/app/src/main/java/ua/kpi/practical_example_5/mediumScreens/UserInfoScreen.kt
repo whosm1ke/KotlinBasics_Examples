@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_5.mediumScreens
+package ua.kpi.practical_example_5.mediumScreens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +24,7 @@ import ua.kpi.practical_example_5.Screen
 
 @Composable
 fun UserInfoScreen(navController: NavHostController) {
+    // Створюємо змінні для зберігання значень імені та email
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
@@ -33,10 +34,12 @@ fun UserInfoScreen(navController: NavHostController) {
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        // Відображаємо заголовок екрану
         Text("Інформація про користувача", fontSize = 20.sp, fontWeight = FontWeight.Bold)
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Поле вводу для імені користувача
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -46,6 +49,7 @@ fun UserInfoScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Поле вводу для email користувача
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
@@ -55,15 +59,17 @@ fun UserInfoScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Рядок кнопок для навігації
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            // Кнопка для повернення до головного екрану
             Button(onClick = { navController.navigate(Screen.MediumScreen.MainScreen.route) }) {
                 Text("Повернутися в меню")
             }
 
-            // Передаємо ім'я користувача на екран прогнозу
+            // Кнопка для переходу до екрана прогнозу сонячної енергії
             Button(
                 onClick = { navController.navigate("${Screen.MediumScreen.SolarForecast.route}/${name.ifEmpty { "Anonymous" }}") }
             ) {

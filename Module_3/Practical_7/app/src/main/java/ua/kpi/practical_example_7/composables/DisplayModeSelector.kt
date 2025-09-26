@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_7.composables
+package ua.kpi.practical_example_7.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,18 +16,19 @@ import ua.kpi.practical_example_7.DisplayFor
 
 @Composable
 fun DisplayModeSelector(
-    // Текуче значення
+    // Текуче значення, що відображається у селекторі
     selected: DisplayFor,
-    // Callback при зміні
+    // Callback функція, яка викликається при зміні вибраного режиму
     onSelectedChange: (DisplayFor) -> Unit
 ) {
-    // Column з кнопками для перемикання
+    // Відображаємо колонку з кнопками для вибору режиму відображення
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Відображаємо заголовок селектора
         Text(
             text = "Вибір режиму відображення",
             style = MaterialTheme.typography.bodyLarge
@@ -35,16 +36,17 @@ fun DisplayModeSelector(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Для кожного значення enum створюємо кнопку
+        // Проходить по всім значенням enum DisplayFor і створює кнопки для кожного
         DisplayFor.values().forEach { mode ->
             Button(
-                onClick = { onSelectedChange(mode) },
+                onClick = { onSelectedChange(mode) }, // Викликає callback при натисканні
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                // Робимо кнопку "активною", якщо це поточний режим
+                // Кнопка вимкнена, якщо це поточний обраний режим
                 enabled = mode != selected
             ) {
+                // Відображаємо текст кнопки залежно від режиму
                 Text(text = when (mode) {
                     DisplayFor.BASIC_LEVEL -> "Базовий рівень"
                     DisplayFor.MIDDLE_LEVEL -> "Середній рівень"

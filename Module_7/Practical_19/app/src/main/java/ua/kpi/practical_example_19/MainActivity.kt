@@ -24,24 +24,26 @@ import ua.kpi.practical_example_19.ui.theme.Practical_Example_19Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Встановлення вмісту активності з використанням Compose
         setContent {
             Practical_Example_19Theme {
+                // Створення стану для вибору рівня складності, який буде зберігатися під час перес creation
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Перемикач між рівнями складності
+                        // Відображення перемикача для вибору рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
-                            onSelectedChange = { displayFor = it }
+                            onSelectedChange = { displayFor = it } // Оновлення стану при зміні вибору
                         )
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp)) // Простір між елементами
 
-                        // Відображення відповідного рівня
+                        // Відображення відповідного компонента залежно від обраного рівня складності
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp()
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp()
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()
+                            DisplayFor.BASIC_LEVEL -> BasicApp()        // Відображення базового рівня
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp()      // Відображення середнього рівня
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()   // Відображення просунутого рівня
                         }
                     }
                 }

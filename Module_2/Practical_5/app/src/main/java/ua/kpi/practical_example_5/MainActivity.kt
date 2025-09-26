@@ -24,13 +24,16 @@ import ua.kpi.practical_example_5.ui.theme.Practical_Example_5Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Встановлення вмісту активності з використанням Compose
         setContent {
             Practical_Example_5Theme {
+                // Створення стану для вибору режиму відображення
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
+                // Створення навігаційного контролера для управління навігацією між екранами
                 val navController = rememberNavController()
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Наш перемикач
+                        // Відображення перемикача режимів відображення
                         DisplayModeSelector(
                             selected = displayFor,
                             onSelectedChange = { displayFor = it }
@@ -38,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
                         Spacer(modifier = Modifier.height(4.dp))
 
-                        // Відображення відповідного екрану
+                        // Вибір та відображення відповідного навігаційного контролера залежно від обраного режиму
                         when (displayFor) {
                             DisplayFor.BASIC_LEVEL -> BasicNavHostController(navController)
                             DisplayFor.MIDDLE_LEVEL -> MediumNavHostController(navController)
@@ -50,4 +53,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

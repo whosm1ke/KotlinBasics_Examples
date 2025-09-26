@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_10.composables
+package ua.kpi.practical_example_10.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,18 +16,19 @@ import ua.kpi.practical_example_10.DisplayFor
 
 @Composable
 fun DisplayModeSelector(
-    // Текуче значення
+    // Текуче значення режиму відображення
     selected: DisplayFor,
-    // Callback при зміні
+    // Callback, який викликається при зміні режиму відображення
     onSelectedChange: (DisplayFor) -> Unit
 ) {
-    // Column з кнопками для перемикання
+    // Відображаємо колонку з кнопками для вибору режиму відображення
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Відображаємо заголовок
         Text(
             text = "Вибір режиму відображення",
             style = MaterialTheme.typography.bodyLarge
@@ -35,14 +36,14 @@ fun DisplayModeSelector(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Для кожного значення enum створюємо кнопку
+        // Проходимо по всіх значеннях enum DisplayFor і створюємо кнопку для кожного
         DisplayFor.values().forEach { mode ->
             Button(
-                onClick = { onSelectedChange(mode) },
+                onClick = { onSelectedChange(mode) }, // Обробник події кліку
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                // Робимо кнопку "активною", якщо це поточний режим
+                // Кнопка неактивна, якщо це поточний вибраний режим
                 enabled = mode != selected
             ) {
                 Text(text = when (mode) {

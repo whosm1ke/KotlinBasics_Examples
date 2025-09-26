@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_10.advanced
+package ua.kpi.practical_example_10.advanced
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,14 +15,15 @@ import ua.kpi.practical_example_10.medium.RetrofitClient
 // ----------------------------
 class SolarViewModel : ViewModel() {
 
+    // Ініціалізація API клієнта через Retrofit
     private val api = RetrofitClient.api
 
-    // Кешування даних у пам’яті
+    // Кешування даних у пам’яті для уникнення повторних запитів
     private val _stationsCache = mutableMapOf<Int, Station>()
     private val _forecastsCache = mutableMapOf<Int, List<Forecast>>()
     private val _statsCache = mutableMapOf<Int, ForecastStats>()
 
-    // StateFlows для UI
+    // StateFlows для спостереження змін у UI
     private val _stations = MutableStateFlow<List<Station>>(emptyList())
     val stations: StateFlow<List<Station>> = _stations
 
@@ -32,6 +33,7 @@ class SolarViewModel : ViewModel() {
     private val _stats = MutableStateFlow<Map<Int, ForecastStats>>(emptyMap())
     val stats: StateFlow<Map<Int, ForecastStats>> = _stats
 
+    // Помилки та статус завантаження для UI
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error
 
@@ -39,44 +41,47 @@ class SolarViewModel : ViewModel() {
     val loading: StateFlow<Boolean> = _loading
 
     // --- Повторна спроба запиту з N спроб ---
+    // Метод для повторних спроб виконання асинхронної операції з обмеженням кількості спроб
     private suspend fun <T> retryRequest(times: Int = 3, block: suspend () -> T): T {
         var currentAttempt = 0
         var lastError: Exception? = null
         while (currentAttempt < times) {
             try {
-                return block()
+                return block() // Виконуємо блок коду
             } catch (e: Exception) {
                 lastError = e
                 currentAttempt++
             }
         }
-        throw lastError ?: Exception("Unknown error")
+        throw lastError ?: Exception("Unknown error") // Якщо всі спроби не вдалося, кидаємо помилку
     }
 
     // --- Завантаження станцій ---
+    // Метод для завантаження списку станцій з API і кешування їх у пам’яті
     fun loadStations() {
-        viewModelScope.launch {
-            _loading.value = true
+        viewModelScope.launch { // Запускаємо в scope ViewModel
+            _loading.value = true // Встановлюємо статус завантаження
             try {
-                val data = retryRequest { api.getStations() }
-                _stations.value = data.sortedBy { it.name }
-                // Кешуємо
+                val data = retryRequest { api.getStations() } // Робимо запит з повторними спробами
+                _stations.value = data.sortedBy { it.name } // Сортуємо за іменем
+                // Кешуємо отримані дані
                 data.forEach { _stationsCache[it.id] = it }
             } catch (e: Exception) {
-                _error.value = "❌ Error loading stations: ${e.localizedMessage}"
+                _error.value = "❌ Error loading stations: ${e.localizedMessage}" // Встановлюємо помилку
             } finally {
-                _loading.value = false
+                _loading.value = false // Завершення завантаження
             }
         }
     }
 
     // --- Завантаження прогнозів станції ---
+    // Метод для завантаження прогнозів для конкретної станції з кешуванням
     fun loadForecasts(stationId: Int) {
         viewModelScope.launch {
             try {
                 val data = retryRequest { api.getForecasts(stationId) }
-                _forecasts.value = _forecasts.value + (stationId to data.sortedBy { it.date })
-                _forecastsCache[stationId] = data
+                _forecasts.value = _forecasts.value + (stationId to data.sortedBy { it.date }) // Додаємо нові дані до списку
+                _forecastsCache[stationId] = data // Кешуємо
             } catch (e: Exception) {
                 _error.value = "❌ Error loading forecasts: ${e.localizedMessage}"
             }
@@ -84,12 +89,13 @@ class SolarViewModel : ViewModel() {
     }
 
     // --- Завантаження статистики станції ---
+    // Метод для завантаження статистики для конкретної станції з кешуванням
     fun loadStats(stationId: Int) {
         viewModelScope.launch {
             try {
                 val data = retryRequest { api.getForecastStats(stationId) }
-                _stats.value = _stats.value + (stationId to data)
-                _statsCache[stationId] = data
+                _stats.value = _stats.value + (stationId to data) // Оновлюємо статистику
+                _statsCache[stationId] = data // Кешуємо
             } catch (e: Exception) {
                 _error.value = "❌ Error loading stats: ${e.localizedMessage}"
             }
@@ -97,13 +103,14 @@ class SolarViewModel : ViewModel() {
     }
 
     // --- Генерація прогнозів ---
+    // Метод для генерації нових прогнозів для станції та оновлення кешу
     fun generateForecasts(stationId: Int, days: Int) {
         viewModelScope.launch {
             try {
-                val newForecasts = retryRequest { api.generateForecasts(stationId, days) }
-                val updated = (_forecasts.value[stationId] ?: emptyList()) + newForecasts
-                _forecasts.value = _forecasts.value + (stationId to updated.sortedBy { it.date })
-                _forecastsCache[stationId] = updated
+                val newForecasts = retryRequest { api.generateForecasts(stationId, days) } // Генеруємо нові прогнози
+                val updated = (_forecasts.value[stationId] ?: emptyList()) + newForecasts // Додаємо нові до існуючих
+                _forecasts.value = _forecasts.value + (stationId to updated.sortedBy { it.date }) // Оновлюємо список прогнозів
+                _forecastsCache[stationId] = updated // Кешуємо
                 // Після генерації оновлюємо статистику
                 loadStats(stationId)
             } catch (e: Exception) {

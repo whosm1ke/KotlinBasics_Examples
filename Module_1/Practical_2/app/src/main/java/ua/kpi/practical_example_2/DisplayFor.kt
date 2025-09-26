@@ -1,7 +1,17 @@
-﻿package ua.kpi.practical_example_2
+package ua.kpi.practical_example_2
 
+/**
+ * Перелік (enum) для визначення рівнів відображення (display) користувача.
+ * Використовується для позначення рівня доступу або досвіду користувача
+ * у контексті додатку.
+ *
+ * Елементи переліку:
+ * - BASIC_LEVEL: базовий рівень доступу
+ * - MIDDLE_LEVEL: середній рівень доступу
+ * - ADVANCED_LEVEL: продвинутий рівень доступу
+ */
 enum class DisplayFor {
-    BASIC_LEVEL,
-    MIDDLE_LEVEL,
-    ADVANCED_LEVEL,
+    BASIC_LEVEL,     // Базовий рівень відображення
+    MIDDLE_LEVEL,    // Середній рівень відображення
+    ADVANCED_LEVEL,  // Продвинутий рівень відображення
 }

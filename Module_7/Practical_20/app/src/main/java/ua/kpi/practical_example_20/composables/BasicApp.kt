@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_20.composables
+package ua.kpi.practical_example_20.composables
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -24,40 +24,46 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BasicApp(sensorManager: SensorManager, accelerometer: Sensor?) {
-    // Стан для нахилу
+    // Створення змінних стану для зберігання значень нахилу по осям X та Y
     var tiltX by remember { mutableStateOf(0f) }
     var tiltY by remember { mutableStateOf(0f) }
 
-    // Реєстрація слухача акселерометра
+    // Реєстрація SensorEventListener для отримання даних з акселерометра
     DisposableEffect(Unit) {
         val listener = object : SensorEventListener {
+            // Викликається при зміні даних з сенсора
             override fun onSensorChanged(event: SensorEvent?) {
                 event?.let {
-                    tiltX = it.values[0] // Нахил по X
-                    tiltY = it.values[1] // Нахил по Y
+                    // Отримання значень нахилу по осях X та Y з події сенсора
+                    tiltX = it.values[0] // Нахил по осі X
+                    tiltY = it.values[1] // Нахил по осі Y
                 }
             }
+            // Викликається при зміні точності сенсора (в даному випадку не використовується)
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
         }
+        // Реєстрація слухача для акселерометра з встановленням затримки вищезгаданого типу
         accelerometer?.also { sensorManager.registerListener(listener, it, SensorManager.SENSOR_DELAY_UI) }
+        // Відписка від слухача при завершенні життєвого циклу компоненти
         onDispose { sensorManager.unregisterListener(listener) }
     }
 
-    // UI — кружок, який рухається відповідно до нахилу
+    // Візуалізація кружка, який рухається відповідно до нахилу пристрою
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFEFEFEF)),
-        contentAlignment = Alignment.Center
+            .background(Color(0xFFEFEFEF)), // Налаштування фону
+        contentAlignment = Alignment.Center // Вирівнювання вмісту по центру
     ) {
-        val animatedX by animateFloatAsState(targetValue = tiltX * 20) // масштабування для наочності
+        // Анімація зміни позиції кружка по осях X та Y для плавного переміщення
+        val animatedX by animateFloatAsState(targetValue = tiltX * 20) // Масштабування для більшої видимості нахилу
         val animatedY by animateFloatAsState(targetValue = tiltY * 20)
 
         Box(
             modifier = Modifier
-                .offset(x = animatedX.dp, y = (-animatedY).dp)
+                .offset(x = animatedX.dp, y = (-animatedY).dp) // Застосування зміщення відповідно до нахилу
                 .size(50.dp)
-                .background(Color.Red, shape = CircleShape)
+                .background(Color.Red, shape = CircleShape) // Встановлення кольору та форми кружка
         )
     }
 }

@@ -30,8 +30,10 @@ import ua.kpi.practical_example_18.ui.theme.Practical_Example_18Theme
 
 class MainActivity : ComponentActivity() {
 
+    // Константа для ідентифікації сповіщення
     private val NOTIFICATION_ID = 101
-    private val PERMISSION_REQUEST_CODE = 1001 // Код для запиту дозволу
+    // Код для запиту дозволу на сповіщення
+    private val PERMISSION_REQUEST_CODE = 1001
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,21 +41,25 @@ class MainActivity : ComponentActivity() {
         // --- Перевірка дозволу на сповіщення для Android 13+ ---
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // Запит дозволу на надсилання сповіщень
                 requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), PERMISSION_REQUEST_CODE)
             }
         }
 
+        // Перевіряємо та запитуємо дозвіл на сповіщення
         ensureNotificationPermission()
 
-        // Створення каналів для сповіщень
+        // Створюємо канали для сповіщень
         createNotificationChannels()
 
+        // Встановлюємо вміст компонентів Compose
         setContent {
             Practical_Example_18Theme {
+                // Змінна для зберігання обраного рівня відображення
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Перемикач між рівнями складності
+                        // Відображаємо перемикач для вибору рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
                             onSelectedChange = { displayFor = it }
@@ -61,7 +67,7 @@ class MainActivity : ComponentActivity() {
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Відображення відповідного рівня
+                        // Відображаємо відповідний рівень на основі обраного значення
                         when (displayFor) {
                             DisplayFor.BASIC_LEVEL -> BasicApp()
                             DisplayFor.MIDDLE_LEVEL -> MediumApp()
@@ -81,6 +87,7 @@ class MainActivity : ComponentActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
+            // Перевіряємо, чи був дозвіл наданий
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 Toast.makeText(this, "Дозвіл на сповіщення надано", Toast.LENGTH_SHORT).show()
             } else {
@@ -92,37 +99,45 @@ class MainActivity : ComponentActivity() {
     // Створюємо канали повідомлень для Android 8+
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Створення каналу для базових сповіщень
             val basicChannel = NotificationChannel(
                 DisplayFor.BASIC_LEVEL.toString(),
                 "Базові сповіщення",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply { description = "Сповіщення про базові події" }
 
+            // Створення каналу для середніх сповіщень
             val middleChannel = NotificationChannel(
                 DisplayFor.MIDDLE_LEVEL.toString(),
                 "Середні сповіщення",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply { description = "Сповіщення з категоріями та пріоритетами" }
 
+            // Створення каналу для просунутого рівня
             val advancedChannel = NotificationChannel(
                 DisplayFor.ADVANCED_LEVEL.toString(),
                 "Просунуті сповіщення",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply { description = "Інтерактивні сповіщення з діями" }
 
+            // Створення каналу для сповіщень про температуру
             val tempChannel = NotificationChannel(
                 "temp_channel",
                 "Сповіщення температури",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply { description = "Повідомлення про температуру панелі" }
 
+            // Створення каналу для сповіщень дій
             val actionChannel = NotificationChannel(
                 "action_channel",
                 "Сповіщення дій",
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply { description = "Нагадування про перевірку інвертора" }
+            
+            // Отримуємо менеджер сповіщень
             val manager = getSystemService(NotificationManager::class.java)
 
+            // Створюємо канали
             manager.createNotificationChannel(tempChannel)
             manager.createNotificationChannel(actionChannel)
 
@@ -132,6 +147,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Перевіряємо дозвіл на сповіщення та запитуємо його при необхідності
     private fun ensureNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
@@ -139,6 +155,7 @@ class MainActivity : ComponentActivity() {
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
+                // Запитуємо дозвіл на сповіщення
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.POST_NOTIFICATIONS),
@@ -148,4 +165,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

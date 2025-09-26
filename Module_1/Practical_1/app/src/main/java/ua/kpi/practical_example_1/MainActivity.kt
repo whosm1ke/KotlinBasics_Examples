@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_1
+package ua.kpi.practical_example_1
 
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -30,14 +30,16 @@ import ua.kpi.practical_example_1.ui.theme.Practical_Example_1Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Вимкнено для прикладу, можна увімкнути для підтримки edge-to-edge режиму
 //        enableEdgeToEdge()
         setContent {
             Practical_Example_1Theme {
+                // Створюємо стан для вибору режиму відображення
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column {
-                        // Наш перемикач
+                        // Відображаємо перемикач режимів
                         DisplayModeSelector(
                             selected = displayFor,
                             onSelectedChange = { displayFor = it }
@@ -45,7 +47,7 @@ class MainActivity : ComponentActivity() {
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Відображення відповідного екрану
+                        // Відображаємо відповідний компонент залежно від обраного режиму
                         when (displayFor) {
                             DisplayFor.BASIC_LEVEL -> SolarForecastAppLevel1()
                             DisplayFor.MIDDLE_LEVEL -> SolarForecastAppLevel2()

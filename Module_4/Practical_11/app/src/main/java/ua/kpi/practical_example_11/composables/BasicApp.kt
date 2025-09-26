@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_11.composables
+package ua.kpi.practical_example_11.composables
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -23,17 +23,22 @@ import ua.kpi.practical_example_11.basic.LoginRequest
 
 @Composable
 fun BasicApp(authViewModel: AuthViewModel = viewModel()) {
+    // Отримуємо контекст для показу Toast-повідомлень
     val context = LocalContext.current
-    // Retrofit для підключення до API
+    
+    // Створюємо Retrofit клієнт для взаємодії з API
+    // Використовується базова URL для підключення до локального сервера (емулятор Android)
     val retrofit = remember {
         Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:5156/") // локальний хост для емулятора Android
+            .baseUrl("http://10.0.2.2:5156/") // Локальний хост для емулятора Android
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+    
+    // Створюємо API-інтерфейс для роботи з авторизацією
     val authApi = retrofit.create(AuthApi::class.java)
 
-    // Змінні для полів форми
+    // Створюємо змінні для зберігання значень полів форми (логін і пароль)
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -44,11 +49,12 @@ fun BasicApp(authViewModel: AuthViewModel = viewModel()) {
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center
         ) {
+            // Відображаємо заголовок форми
             Text(text = "Login", style = MaterialTheme.typography.titleLarge)
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Поле логіну
+            // Поле для введення логіну
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
@@ -59,7 +65,7 @@ fun BasicApp(authViewModel: AuthViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Поле пароля
+            // Поле для введення пароля з прихованим вводом
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -72,21 +78,25 @@ fun BasicApp(authViewModel: AuthViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Кнопка входу
+            // Кнопка входу, яка виконує авторизацію
             Button(
                 onClick = {
+                    // Перевіряємо, чи заповнені обидва поля
                     if (username.isBlank() || password.isBlank()) {
                         Toast.makeText(context, "Please enter username and password", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
 
-                    // Корутину виконуємо на IO для мережевого запиту
+                    // Виконуємо корутину в фоновому потоці (IO)
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
+                            // Виконуємо мережевий запит на авторизацію
                             val response = authApi.login(LoginRequest(username, password))
+                            
+                            // Зберігаємо отриманий токен і роль в ViewModel
                             authViewModel.saveToken(response.token, response.role)
 
-                            // Показуємо Toast на UI-потоці
+                            // Показуємо повідомлення про успішну авторизацію на UI-потоці
                             withContext(Dispatchers.Main) {
                                 Toast.makeText(
                                     context,
@@ -95,6 +105,7 @@ fun BasicApp(authViewModel: AuthViewModel = viewModel()) {
                                 ).show()
                             }
                         } catch (e: Exception) {
+                            // Обробляємо помилки мережевого запиту
                             withContext(Dispatchers.Main) {
                                 Toast.makeText(
                                     context,
@@ -112,11 +123,10 @@ fun BasicApp(authViewModel: AuthViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Показуємо токен, якщо він збережений
+            // Якщо токен збережений, відображаємо його
             authViewModel.token?.let {
                 Text("Saved token: $it", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
 }
-

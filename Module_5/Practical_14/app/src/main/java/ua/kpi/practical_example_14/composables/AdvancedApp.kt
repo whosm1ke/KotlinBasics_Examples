@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_14.composables
+package ua.kpi.practical_example_14.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,7 +27,7 @@ import ua.kpi.practical_example_14.data.SolarStation
 
 @Composable
 fun AdvancedApp() {
-    // Дані зі станціями
+    // Створюємо список сонячних станцій з початковими даними
     val stations = remember {
         listOf(
             SolarStation("Сонячна Станція 1", "Сонячна", "Прогнозована потужність 120 кВт", 50.45, 30.52, 120.0),
@@ -36,22 +36,23 @@ fun AdvancedApp() {
         )
     }
 
-    // Стан для інтерактивності між списком і картою
+    // Створюємо стан для відстеження обраної станції
     var selectedStation by remember { mutableStateOf<SolarStation?>(null) }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        // Відображаємо заголовок додатку
         Text("Сонячні електростанції із картою (симуляція)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(modifier = Modifier.fillMaxSize()) {
-            // Ліва частина - список
+            // Ліва частина - список станцій
             LazyColumn(modifier = Modifier.weight(1f)) {
                 items(stations) { station ->
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
-                            .clickable { if(selectedStation == null) selectedStation = station else selectedStation = null }, // натискання на елемент списку фокусується на "карті"
+                            .clickable { if(selectedStation == null) selectedStation = station else selectedStation = null }, // Натискання на елемент списку вибирає станцію для показу на карті
                         elevation = CardDefaults.cardElevation(4.dp),
                         colors = if (station == selectedStation) CardDefaults.cardColors(containerColor = Color(0xFFE0F7FA))
                         else CardDefaults.cardColors()
@@ -67,7 +68,7 @@ fun AdvancedApp() {
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Права частина - "карта" (симуляція)
+            // Права частина - симуляція карти
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -78,14 +79,14 @@ fun AdvancedApp() {
                 Text("Карта (симуляція)", fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Відображення маркерів
+                // Відображення маркерів на карті
                 stations.forEach { station ->
                     Box(
                         modifier = Modifier
                             .padding(4.dp)
                             .fillMaxWidth()
                             .height(40.dp)
-                            .clickable { selectedStation = station }, // натискання на маркер виділяє елемент списку
+                            .clickable { selectedStation = station }, // Натискання на маркер вибирає станцію у списку
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -97,6 +98,7 @@ fun AdvancedApp() {
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+                // Відображення інформації про обрану станцію
                 selectedStation?.let {
                     Text("Вибрано: ${it.name}", fontWeight = FontWeight.Bold, color = Color.Blue)
                 }

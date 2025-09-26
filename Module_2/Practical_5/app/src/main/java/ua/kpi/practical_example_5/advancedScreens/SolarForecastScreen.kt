@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_5.advancedScreens
+package ua.kpi.practical_example_5.advancedScreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,6 +31,7 @@ import ua.kpi.practical_example_5.components.ScreenTitle
 
 @Composable
 fun SolarForecastScreen(navController: NavHostController, userName: String) {
+    // Змінна для зберігання введеного значення кількості панелей
     var panelsCountInput by rememberSaveable { mutableStateOf("") }
 
     Column(
@@ -41,12 +42,15 @@ fun SolarForecastScreen(navController: NavHostController, userName: String) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Відображення привітання з ім'ям користувача
         ScreenTitle("Привіт, $userName!")
 
+        // Текст заголовка для прогнозу потужності СЕС
         Text("Прогноз потужності Сонячної електростанції", fontSize = 18.sp)
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Поле вводу для кількості панелей
         OutlinedTextField(
             value = panelsCountInput,
             onValueChange = { panelsCountInput = it },
@@ -56,12 +60,17 @@ fun SolarForecastScreen(navController: NavHostController, userName: String) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Ряд з кнопками для подальших дій
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            // Кнопка "Розрахувати потужність" - навігація до екрану деталей
             MenuButton("Розрахувати потужність") {
+                // Перетворюємо введене значення на число або встановлюємо 0, якщо не вдалося
                 val count = panelsCountInput.toIntOrNull() ?: 0
+                // Навігація до екрану деталей з передачею кількості панелей
                 navController.navigate("${Screen.AdvancedScreen.SolarDetails.route}/$count")
             }
 
+            // Кнопка "Повернутися в меню" - навігація назад до головного екрану
             MenuButton("Повернутися в меню") { navController.navigate(Screen.AdvancedScreen.MainScreen.route) }
         }
     }

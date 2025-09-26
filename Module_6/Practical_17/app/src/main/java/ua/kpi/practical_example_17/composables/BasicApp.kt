@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_17.composables
+package ua.kpi.practical_example_17.composables
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -20,32 +20,39 @@ import kotlin.math.sqrt
 
 @Composable
 fun BasicApp(sensorManager: SensorManager, accelerometer: Sensor?) {
-    // Стан для збереження показників акселерометра
+    // Створюємо стан для зберігання даних акселерометра
     var accelData by remember { mutableStateOf(listOf<Float>()) }
 
-    // Listener для акселерометра
+    // Створюємо об'єкт-слухача для акселерометра
     val sensorListener = remember {
         object : SensorEventListener {
+            // Метод викликається при зміні даних сенсора
             override fun onSensorChanged(event: SensorEvent?) {
                 event?.let {
+                    // Обчислюємо загальну величину прискорення за трьома осями
                     val magnitude = sqrt(it.values[0]*it.values[0] + it.values[1]*it.values[1] + it.values[2]*it.values[2])
-                    accelData = listOf(magnitude) // Зберігаємо загальну величину
+                    // Оновлюємо стан з новим значенням величини прискорення
+                    accelData = listOf(magnitude)
                 }
             }
 
+            // Метод викликається при зміні точності сенсора (в даному випадку нічого не робимо)
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
         }
     }
 
-    // Реєстрація сенсора
+    // Реєстрація слухача для акселерометра, який буде виконуватись лише під час життєвого циклу компоненти
     DisposableEffect(Unit) {
         accelerometer?.let { sensorManager.registerListener(sensorListener, it, SensorManager.SENSOR_DELAY_NORMAL) }
+        // Відписка від сенсора при завершенні життєвого циклу
         onDispose { sensorManager.unregisterListener(sensorListener) }
     }
 
     Column {
+        // Виводимо заголовок для компоненти
         Text("Базовий рівень: Акселерометр", style = MaterialTheme.typography.titleMedium)
         LazyColumn {
+            // Виводимо список значень величини прискорення
             items(accelData) { value ->
                 Text("Поточна величина: ${"%.2f".format(value)} m/s²")
             }

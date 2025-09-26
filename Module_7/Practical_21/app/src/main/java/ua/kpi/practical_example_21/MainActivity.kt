@@ -25,14 +25,16 @@ import ua.kpi.practical_example_21.ui.theme.Practical_Example_21Theme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Вмикає підтримку edge-to-edge (відображення вмісту за межами статусного рядка та навігаційної панелі)
         enableEdgeToEdge()
         setContent {
             Practical_Example_21Theme {
+                // Створюємо змінну для відстеження поточного рівня складності
                 var displayFor by remember { mutableStateOf(DisplayFor.BASIC_LEVEL) }
 
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        // Перемикач рівня складності
+                        // Відображаємо перемикач для вибору рівня складності
                         DisplayModeSelector(
                             selected = displayFor,
                             onSelectedChange = { displayFor = it }
@@ -40,11 +42,11 @@ class MainActivity : ComponentActivity() {
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        // Відображення UI відповідно до рівня
+                        // Відображаємо відповідний компонент залежно від обраного рівня складності
                         when (displayFor) {
-                            DisplayFor.BASIC_LEVEL -> BasicApp()
-                            DisplayFor.MIDDLE_LEVEL -> MediumApp()
-                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()
+                            DisplayFor.BASIC_LEVEL -> BasicApp()         // Базовий рівень
+                            DisplayFor.MIDDLE_LEVEL -> MediumApp()       // Середній рівень
+                            DisplayFor.ADVANCED_LEVEL -> AdvancedApp()   // Просунутий рівень
                         }
                     }
                 }
@@ -52,4 +54,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

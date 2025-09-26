@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_9.composables
+package ua.kpi.practical_example_9.composables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,16 +19,22 @@ import ua.kpi.practical_example_9.medium.SolarViewModel
 
 @Composable
 fun MediumApp(viewModel: SolarViewModel = viewModel()) {
+    // Отримуємо список прогнозів з ViewModel за допомогою collectAsState
     val forecasts by viewModel.forecasts.collectAsState()
 
+    // Створюємо стан для введення даних про день і потужність
     var day by remember { mutableStateOf("") }
     var power by remember { mutableStateOf("") }
 
+    // Основна колонка з елементами інтерфейсу
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        // Відображаємо заголовок додатку
         Text("Середній рівень: Retrofit2 + локальне кешування")
 
+        // Простір між елементами
         Spacer(Modifier.height(8.dp))
 
+        // Поле для введення дня
         OutlinedTextField(
             value = day,
             onValueChange = { day = it },
@@ -36,8 +42,10 @@ fun MediumApp(viewModel: SolarViewModel = viewModel()) {
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Простір між елементами
         Spacer(Modifier.height(8.dp))
 
+        // Поле для введення потужності
         OutlinedTextField(
             value = power,
             onValueChange = { power = it },
@@ -45,13 +53,19 @@ fun MediumApp(viewModel: SolarViewModel = viewModel()) {
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Простір між елементами
         Spacer(Modifier.height(8.dp))
 
+        // Група кнопок для додавання та завантаження даних
         Row {
             Button(onClick = {
+                // Перевіряємо, чи заповнені обидва поля
                 if (day.isNotBlank() && power.isNotBlank()) {
+                    // Знаходимо максимальний ID у списку прогнозів і збільшуємо його на 1 для нового запису
                     val id = (forecasts.maxOfOrNull { it.id } ?: 0) + 1
+                    // Додаємо новий прогноз у ViewModel
                     viewModel.addForecast(SolarForecast(id, day, power.toDouble()))
+                    // Очищуємо поля вводу
                     day = ""
                     power = ""
                 }
@@ -64,15 +78,19 @@ fun MediumApp(viewModel: SolarViewModel = viewModel()) {
             }
         }
 
+        // Простір між елементами
         Spacer(Modifier.height(16.dp))
 
+        // Відображення списку прогнозів у вигляді LazyColumn
         LazyColumn {
             items(forecasts) { forecast ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    // Відображаємо день і прогнозовану потужність
                     Text("${forecast.day}: ${forecast.predictedPower} кВт")
+                    // Кнопка видалення прогнозу
                     IconButton(onClick = { viewModel.deleteForecast(forecast.id) }) {
                         Icon(Icons.Default.Delete, contentDescription = "Видалити")
                     }

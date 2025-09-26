@@ -1,11 +1,14 @@
-﻿package ua.kpi.practical_example_14.data
+package ua.kpi.practical_example_14.data
 
-// Дані про сонячні електростанції
+// Клас, що представляє дані про сонячну електростанцію
+// Використовується для зберігання інформації про розташування,
+// тип та прогнозовану потужність сонячної станції
+
 data class SolarStation(
-    val name: String,
-    val type: String,
-    val description: String,
-    val latitude: Double,
-    val longitude: Double,
-    val forecastPower: Double // прогнозована потужність в кВт
+    val name: String, // Назва сонячної електростанції
+    val type: String, // Тип електростанції (наприклад, модульна, панельна тощо)
+    val description: String, // Опис станції
+    val latitude: Double, // Географічна широта місця розташування
+    val longitude: Double, // Географічна довгота місця розташування
+    val forecastPower: Double // Прогнозована потужність електростанції в кіловатах (кВт)
 )

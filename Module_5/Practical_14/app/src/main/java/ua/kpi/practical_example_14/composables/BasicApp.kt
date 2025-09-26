@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_14.composables
+package ua.kpi.practical_example_14.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +20,7 @@ import ua.kpi.practical_example_14.data.SolarStation
 
 @Composable
 fun BasicApp() {
-    // Приклад даних
+    // Створення запам'ятовуваного списку сонячних станцій з прикладними даними
     val stations = remember {
         listOf(
             SolarStation("Сонячна Станція 1", "Сонячна", "", 50.45, 30.52, 120.0),
@@ -35,24 +35,29 @@ fun BasicApp() {
         )
     }
 
+    // Основний колонковий макет для відображення вмісту
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        // Відображення заголовка списку станцій
         Text(
             "Список сонячних електростанцій",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
 
+        // Пропуск між заголовком і списком
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Динамічний список за допомогою LazyColumn
+        // Використання LazyColumn для ефективного відображення списку станцій
         LazyColumn {
             items(stations) { station ->
+                // Відображення назви та типу кожної станції
                 Text(
                     "${station.name} - ${station.type}",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
                 )
+                // Пропуск між елементами списку
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }

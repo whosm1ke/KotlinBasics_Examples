@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_15.composables
+package ua.kpi.practical_example_15.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +23,7 @@ import ua.kpi.practical_example_15.viewModels.SolarStationViewModel
 fun BasicApp(viewModel: SolarStationViewModel = viewModel()) {
     Column {
         // --- Поле пошуку по назві ---
+        // Відображає поле для введення тексту, яке зв'язане з пошуковим запитом у ViewModel
         OutlinedTextField(
             value = viewModel.searchQuery,
             onValueChange = { viewModel.updateSearchQuery(it) },
@@ -33,6 +34,7 @@ fun BasicApp(viewModel: SolarStationViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(8.dp))
 
         // --- Сортування за назвою або типом ---
+        // Кнопки для зміни порядку сортування станцій (за назвою або типом)
         Row {
             Button(onClick = { viewModel.updateSortBy("Name") }, modifier = Modifier.padding(end = 8.dp)) {
                 Text("Сортувати за назвою")
@@ -45,6 +47,7 @@ fun BasicApp(viewModel: SolarStationViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // --- Список станцій ---
+        // Відображає список станцій, які відфільтровані та відсортовані відповідно до параметрів у ViewModel
         LazyColumn {
             items(viewModel.filteredStations) { station ->
                 Text("${station.name} (${station.type})")

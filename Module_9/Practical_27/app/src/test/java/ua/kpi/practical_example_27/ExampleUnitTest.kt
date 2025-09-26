@@ -8,9 +8,10 @@ import org.junit.Test
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+// Оголошення класу тестів для локального виконання
 class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    @Test  // Анотація, що позначає метод як тестовий
+    fun addition_isCorrect() {  // Тестова функція, яка перевіряє правильність додавання
+        assertEquals(4, 2 + 2)  // Перевірка, чи результат виразу 2 + 2 дорівнює 4
     }
 }

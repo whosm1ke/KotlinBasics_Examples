@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_23.composables
+package ua.kpi.practical_example_23.composables
 
 import android.content.Intent
 import android.net.Uri
@@ -28,33 +28,43 @@ import java.util.*
 
 @Composable
 fun MediumApp() {
+    // Отримуємо контекст додатку для подальшого використання
     val context = LocalContext.current
 
+    // Створюємо змінні для зберігання URI фото та документів
     var imageUris by remember { mutableStateOf(listOf<Uri>()) }
     var documentUris by remember { mutableStateOf(listOf<Uri>()) }
 
+    // Ланцюг для отримання фото
     val imageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { imageUris = imageUris + it }
+        uri?.let { imageUris = imageUris + it } // Додаємо отриманий URI до списку фото
     }
 
+    // Ланцюг для отримання документів
     val documentLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { documentUris = documentUris + it }
+        uri?.let { documentUris = documentUris + it } // Додаємо отриманий URI до списку документів
     }
 
+    // Стан для фільтрації ("Всі", "Фото", "Документи")
     var filter by remember { mutableStateOf("Всі") }
+    
+    // Формат дати для відображення
     val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
 
+    // Стан для обраного фото (для показу у діалозі)
     var selectedPhoto by remember { mutableStateOf<Uri?>(null) }
 
 
     Column {
+        // Відображаємо заголовок додатку
         Text("Середній рівень: фото та документи з фільтрацією", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Кнопки для додавання фото та документів
         Row {
             Button(onClick = { imageLauncher.launch("image/*") }, modifier = Modifier.padding(end = 8.dp)) {
                 Text("Додати фото")
@@ -66,13 +76,14 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // Кнопки фільтрації
         Row {
             listOf("Всі", "Фото", "Документи").forEach { type ->
                 Button(
-                    onClick = { filter = type },
+                    onClick = { filter = type }, // Зміна стану фільтра при натисканні
                     modifier = Modifier.padding(end = 4.dp),
                     colors = if (filter == type) ButtonDefaults.buttonColors(Color.Cyan)
-                    else ButtonDefaults.buttonColors()
+                    else ButtonDefaults.buttonColors() // Кольори кнопки залежно від стану фільтра
                 ) {
                     Text(type)
                 }
@@ -81,12 +92,15 @@ fun MediumApp() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Створюємо список пар (тип, URI) для відображення
         val items = mutableListOf<Pair<String, Uri>>()
         imageUris.forEach { items.add("Фото" to it) }
         documentUris.forEach { items.add("Документи" to it) }
 
+        // Фільтруємо елементи залежно від обраного фільтра
         val filteredItems = items.filter { filter == "Всі" || it.first == filter }
 
+        // Відображаємо список у LazyColumn
         LazyColumn {
             items(filteredItems) { pair ->
                 Row(
@@ -104,8 +118,8 @@ fun MediumApp() {
                         }
                         .padding(8.dp)
                 ) {
-                    Text(pair.first, modifier = Modifier.weight(1f))
-                    Text(dateFormat.format(Date()))
+                    Text(pair.first, modifier = Modifier.weight(1f)) // Відображаємо тип елемента
+                    Text(dateFormat.format(Date())) // Відображаємо поточну дату та час
                 }
             }
         }
@@ -121,15 +135,14 @@ fun MediumApp() {
                     .background(Color.Black)
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(selectedPhoto),
+                    painter = rememberAsyncImagePainter(selectedPhoto), // Завантаження зображення
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable { selectedPhoto = null },
-                    contentScale = ContentScale.Fit
+                        .clickable { selectedPhoto = null }, // Закриття діалогу при кліку
+                    contentScale = ContentScale.Fit // Масштабування зображення
                 )
             }
         }
     }
-
 }

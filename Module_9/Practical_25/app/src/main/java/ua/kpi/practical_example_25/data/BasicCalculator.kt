@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_25.data
+package ua.kpi.practical_example_25.data
 
 class BasicCalculator {
     /**
@@ -29,4 +29,3 @@ class BasicCalculator {
         return powerWatts / 1000.0
     }
 }
-

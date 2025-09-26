@@ -1,4 +1,4 @@
-﻿package ua.kpi.practical_example_15.composables
+package ua.kpi.practical_example_15.composables
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +23,7 @@ import ua.kpi.practical_example_15.viewModels.SolarStationViewModel
 fun MediumApp(viewModel: SolarStationViewModel = viewModel()) {
     Column {
         // --- Пошук ---
+        // Відображає поле для введення тексту пошуку, яке оновлює пошуковий запит у ViewModel
         OutlinedTextField(
             value = viewModel.searchQuery,
             onValueChange = { viewModel.updateSearchQuery(it) },
@@ -33,6 +34,7 @@ fun MediumApp(viewModel: SolarStationViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(8.dp))
 
         // --- Фільтр за типом ---
+        // Відображає кнопки для фільтрації станцій за типом (Solar, Wind, Hydro, All)
         Row {
             listOf("Solar", "Wind", "Hydro", "All").forEach { type ->
                 Button(
@@ -45,6 +47,7 @@ fun MediumApp(viewModel: SolarStationViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(8.dp))
 
         // --- Сортування ---
+        // Відображає кнопки для сортування станцій за різними критеріями (Name, Type, Power)
         Row {
             listOf("Name", "Type", "Power").forEach { criteria ->
                 Button(
@@ -57,6 +60,7 @@ fun MediumApp(viewModel: SolarStationViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // --- Список карток станцій ---
+        // Відображає список станцій у вигляді карток з деталями
         LazyColumn {
             items(viewModel.filteredStations) { station ->
                 Card(modifier = Modifier
