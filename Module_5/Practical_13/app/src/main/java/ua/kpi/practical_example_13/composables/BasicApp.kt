@@ -25,7 +25,7 @@ fun BasicApp() {
     // Запуск LaunchedEffect, який виконується один раз при старті Composable-елемента
     LaunchedEffect(Unit) {
         // Виклик функції для отримання Flow потоку даних про потужність
-        getSolarPowerFlow()
+        getSolarPowerFlowBase()
             .collect { value ->
                 // Оновлення стану power при отриманні нового значення з Flow
                 power = value
@@ -42,7 +42,7 @@ fun BasicApp() {
 }
 
 // Функція, яка створює Flow для імітації даних від сенсора сонячної станції
-fun getSolarPowerFlow(): Flow<Float> = flow {
+fun getSolarPowerFlowBase(): Flow<Float> = flow {
     // Нескінченний цикл для генерації даних
     while (true) {
         delay(1000) // Затримка 1 секунда перед надсиланням нового значення
